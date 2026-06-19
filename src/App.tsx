@@ -179,6 +179,10 @@ const App = () => (
                               <Route path="/about" element={<About />} />
                               <Route path="/contact" element={<Contact />} />
                               <Route path="/faq" element={<FAQ />} />
+                              <Route path="/private-label" element={<PrivateLabel />} />
+                              <Route path="/sifat" element={<Sifat />} />
+                              <Route path="/ishlab-chiqarish" element={<IshlabChiqarish />} />
+                              <Route path="/eksport" element={<Eksport />} />
                               <Route path="/cart" element={<Cart />} />
                               <Route path="/checkout" element={<Checkout />} />
                               <Route path="/thank-you" element={<ThankYou />} />
