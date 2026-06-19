@@ -170,9 +170,9 @@ export default function Index() {
       <section ref={sectionWhyUs.ref} className="py-20 md:py-28 bg-secondary">
         <div className="container mx-auto px-4 lg:px-8">
           <div className={`text-center mb-16 transition-all duration-700 ${sectionWhyUs.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <EditableText contentKey="whyus_label" fallback="Afzalliklar" as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="whyus" />
+            <EditableText contentKey="whyus_label" fallback={language === 'ru' ? 'Преимущества' : 'Afzalliklar'} as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="whyus" />
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4">
-              <EditableText contentKey="whyus_title" fallback="Nega aynan biz" as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="whyus" />
+              <EditableText contentKey="whyus_title" fallback={language === 'ru' ? 'Почему выбирают нас' : 'Nega aynan biz'} as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="whyus" />
             </h2>
           </div>
 
@@ -208,9 +208,9 @@ export default function Index() {
       <section ref={sectionProcess.ref} className="py-20 md:py-28 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
           <div className={`text-center mb-16 transition-all duration-700 ${sectionProcess.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <EditableText contentKey="process_label" fallback="Jarayon" as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="process" />
+            <EditableText contentKey="process_label" fallback={language === 'ru' ? 'Процесс' : 'Jarayon'} as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="process" />
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4">
-              <EditableText contentKey="process_title" fallback="Qanday ishlaymiz" as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="process" />
+              <EditableText contentKey="process_title" fallback={language === 'ru' ? 'Как заказать' : "Qanday buyurtma berish"} as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="process" />
             </h2>
           </div>
 
@@ -241,9 +241,9 @@ export default function Index() {
       <section ref={sectionServices.ref} className="py-20 md:py-28 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
           <div className={`text-center mb-16 transition-all duration-700 ${sectionServices.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <EditableText contentKey="services_label" fallback="Xizmatlar" as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="services" />
+            <EditableText contentKey="services_label" fallback={language === 'ru' ? 'Категории' : 'Toifalar'} as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="services" />
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4">
-              <EditableText contentKey="services_title" fallback="Biz nimalar qilamiz" as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="services" />
+              <EditableText contentKey="services_title" fallback={language === 'ru' ? 'Что мы предлагаем' : 'Nimani taklif qilamiz'} as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="services" />
             </h2>
           </div>
 
