@@ -159,11 +159,43 @@ export default function Catalog() {
     return pages;
   };
 
+  const activePetSlug = initialCategoryParam === 'itlar-uchun-ozuqa' ? 'dog'
+    : initialCategoryParam === 'mushuklar-uchun-ozuqa' ? 'cat' : null;
+
   return (
     <div id="hero" className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         <div className="mb-8">
           <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">{t.catalog.title}</h1>
+
+          {/* Quick pet-type filter */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <Button
+              variant={activePetSlug === null ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => { setSearchParams({}, { replace: true }); }}
+              className="rounded-full"
+            >
+              {language === 'ru' ? 'Все' : 'Hammasi'}
+            </Button>
+            <Button
+              variant={activePetSlug === 'dog' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => { setSearchParams({ category: 'itlar-uchun-ozuqa' }, { replace: true }); }}
+              className="rounded-full gap-1.5"
+            >
+              🐕 {language === 'ru' ? 'Для собак' : 'Itlar uchun'}
+            </Button>
+            <Button
+              variant={activePetSlug === 'cat' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => { setSearchParams({ category: 'mushuklar-uchun-ozuqa' }, { replace: true }); }}
+              className="rounded-full gap-1.5"
+            >
+              🐈 {language === 'ru' ? 'Для кошек' : 'Mushuklar uchun'}
+            </Button>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
