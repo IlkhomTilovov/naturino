@@ -153,12 +153,12 @@ export const ShopByCategoriesSection = memo(function ShopByCategoriesSection() {
                   {String(current + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
                 </span>
 
-                {/* Mobile controls */}
-                <div className="flex md:hidden items-center gap-2">
+                {/* Carousel controls */}
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => api?.scrollPrev()}
-                    className="w-10 h-10 rounded-full border border-border flex items-center justify-center"
+                    className="w-10 h-10 md:w-11 md:h-11 rounded-full border border-border bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex items-center justify-center"
                     aria-label={t('Oldingi', 'Назад')}
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -166,7 +166,7 @@ export const ShopByCategoriesSection = memo(function ShopByCategoriesSection() {
                   <button
                     type="button"
                     onClick={() => api?.scrollNext()}
-                    className="w-10 h-10 rounded-full border border-border flex items-center justify-center"
+                    className="w-10 h-10 md:w-11 md:h-11 rounded-full border border-border bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex items-center justify-center"
                     aria-label={t('Keyingi', 'Далее')}
                   >
                     <ChevronRight className="w-4 h-4" />
