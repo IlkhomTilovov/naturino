@@ -31,6 +31,10 @@ import ProductDetails from "./pages/ProductDetails";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
+import PrivateLabel from "./pages/PrivateLabel";
+import Sifat from "./pages/Sifat";
+import IshlabChiqarish from "./pages/IshlabChiqarish";
+import Eksport from "./pages/Eksport";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import ThankYou from "./pages/ThankYou";
@@ -175,6 +179,10 @@ const App = () => (
                               <Route path="/about" element={<About />} />
                               <Route path="/contact" element={<Contact />} />
                               <Route path="/faq" element={<FAQ />} />
+                              <Route path="/private-label" element={<PrivateLabel />} />
+                              <Route path="/sifat" element={<Sifat />} />
+                              <Route path="/ishlab-chiqarish" element={<IshlabChiqarish />} />
+                              <Route path="/eksport" element={<Eksport />} />
                               <Route path="/cart" element={<Cart />} />
                               <Route path="/checkout" element={<Checkout />} />
                               <Route path="/thank-you" element={<ThankYou />} />

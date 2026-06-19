@@ -30,10 +30,12 @@ export function Header() {
   }, [location.pathname]);
 
   const navLinks = [
-    { href: '/', label: language === 'ru' ? 'Главная' : 'Bosh sahifa' },
-    { href: '/catalog', label: language === 'ru' ? 'Каталог' : 'Katalog' },
-    { href: '/about', label: language === 'ru' ? 'О бренде' : 'Brend haqida' },
-    { href: '/faq', label: 'FAQ' },
+    { href: '/about', label: language === 'ru' ? 'Компания' : 'Kompaniya' },
+    { href: '/catalog', label: language === 'ru' ? 'Продукция' : 'Mahsulotlar' },
+    { href: '/private-label', label: 'Private Label' },
+    { href: '/sifat', label: language === 'ru' ? 'Качество' : 'Sifat' },
+    { href: '/ishlab-chiqarish', label: language === 'ru' ? 'Производство' : 'Ishlab chiqarish' },
+    { href: '/eksport', label: language === 'ru' ? 'Экспорт' : 'Eksport' },
     { href: '/contact', label: language === 'ru' ? 'Контакты' : 'Aloqa' },
   ];
 
@@ -107,7 +109,7 @@ export function Header() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-9 absolute left-1/2 -translate-x-1/2">
+          <nav className="hidden lg:flex items-center gap-5 xl:gap-7 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => {
               const active = isActive(link.href);
               return (
