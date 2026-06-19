@@ -1,98 +1,93 @@
-# PETFOOD MARKET — Loyihani pet-food yo'nalishiga moslashtirish
+# Naturino 2.0 — Ekspert Pet-Food Ekotizimi
 
-Mavjud texnik arxitektura (React + Supabase + admin panel + CMS + dinamik atributlar + Telegram + SEO + UZ/RU) **to'liq saqlanadi**. Faqat kontent, kategoriyalar, atributlar, biznes logika va dizayn aksenti pet-food yo'nalishiga moslashadi.
+Bu juda katta ko'lamli loyiha. Uni **6 bosqichga** ajratamiz. Har bir bosqich alohida ishlaydigan, sinab ko'rsa bo'ladigan natija beradi. Tasdiqlasangiz, **Bosqich 1 dan ketma-ket** boshlayman.
 
-Ish hajmi katta bo'lgani uchun **5 ta bosqichga** ajratiladi. Har bir bosqich o'zicha ishlaydigan, sinab ko'rsa bo'ladigan natija beradi.
-
----
-
-## Bosqich 1 — Brending va kontent migratsiyasi
-
-**Maqsad:** "MIR MEXA / mo'yna" izlarini olib tashlash, "PETFOOD MARKET" pozitsiyasini joriy qilish.
-
-- `system_settings` da brand_name, logo matni, footer, contact ma'lumotlari → PETFOOD MARKET
-- `site_content` (CMS) yozuvlarini UZ/RU pet-food matnlari bilan yangilash:
-  - Hero: "It va mushuklar uchun sifatli ozuqalar"
-  - Afzalliklar bloki (tez yetkazib berish, original, veterinar tavsiya, qulay buyurtma)
-  - About, Contact, Footer matnlari
-- `index.html` — sitewide title, description, OG:title PETFOOD MARKETga
-- FAQ sahifasi yangi 8 ta savol bilan to'ldiriladi (insert orqali)
-- Header/Footer/Navigation matnlari `translations.ts` da yangilanadi
-
-## Bosqich 2 — Kategoriyalar va brendlar
-
-**Maqsad:** Eski kiyim kategoriyalarini olib tashlab, 16 ta pet-food kategoriya yaratish.
-
-- Eski `categories` yozuvlari deaktivatsiya
-- 16 ta yangi kategoriya (Itlar uchun ozuqa, Mushuklar uchun ozuqa, Quruq, Nam, Veterinary, Puppy, Kitten, Adult, Senior, Sterilized, Sensitive, Urinary, Hypoallergenic, Premium, Treats, Aksessuarlar) — har birida slug, UZ/RU nom + tavsif, SEO title/description
-- Premium pet-food brendlar (Royal Canin, Pro Plan, Hill's, Acana, Orijen, Brit, Monge, Farmina, Pedigree, Whiskas) `brands` jadvaliga insert
-- Hero ostida **tezkor filtr tugmalari:** "Itlar uchun" / "Mushuklar uchun"
-
-## Bosqich 3 — Dinamik atributlar tizimi
-
-**Maqsad:** Mavjud `attributes` + `attribute_options` jadvallariga pet-food atributlarini joylash.
-
-Atribut guruhlari va opsiyalar:
-- Hayvon turi (it/mushuk) — **filter**
-- Yosh guruhi (puppy/kitten/adult/senior) — **filter**
-- Ozuqa turi (dry/wet/treat/veterinary/premium) — **filter**
-- Qadoq hajmi (400g…15kg) — **filter** + variant uchun
-- Ta'm (tovuq/mol/baliq/qo'y/kurka/losos/o'rdak) — **filter**
-- Maxsus ehtiyoj (sterilized/sensitive/urinary/hypoallergenic/hairball/weight/digestive/skin&coat) — **filter**
-- Kelib chiqish mamlakati — **filter**
-- Veterinar tavsiyasi (ha/yo'q) — **filter** + badge
-- Tarkib atributlari (protein %, yog' %, kletchatka %, namlik %, vitaminlar, mineral, asosiy ingredient, allergensiz, grain-free)
-
-`CatalogFilterSidebar` shu atributlarni avtomatik o'qib filtrlarni chiqaradi (mavjud arxitektura buni qo'llab-quvvatlaydi).
-
-## Bosqich 4 — Mahsulot/Checkout/Telegram biznes logikasi
-
-**Maqsad:** Pet-food spetsifik logika qo'shish.
-
-- **Ombor qoldig'i:** `products.stock_quantity` ishlatiladi; 0 bo'lsa "Tugagan" badge + savatga qo'shish bloklanadi
-- **Qadoq variantlari:** har bir variant alohida product yoki product_attribute_values orqali — narx + qoldiq alohida
-- **Veterinar tavsiyasi badge** ProductCard va ProductDetails da
-- **Takroriy buyurtma:** checkoutda "Har 2 hafta / Har oy / Bir martalik" tanlovi (`orders` ga `recurrence` kolonkasi qo'shiladi)
-- **Yetkazib berish zonalari:** yangi `delivery_zones` jadvali (Toshkent shaharlari/viloyatlar + narx), admin paneldan boshqariladi
-- **Checkout maydonlari** `checkout_fields` orqali yangilanadi: Ism, Telefon, Manzil, Shahar/Tuman (zone select), Hayvon turi, Izoh, To'lov turi, Yetkazib berish turi
-- **Telegram xabar formati** (`send-telegram` edge function) yangilanadi — buyurtma raqami, mijoz, manzil, mahsulotlar (qadoq+soni), summa, yetkazib berish turi, to'lov turi
-- ProductDetails sahifasi pet-food maydonlari (tarkib, porsiya jadvali, saqlash sharoiti, maxsus ehtiyoj mosligi) bilan kengaytiriladi
-
-## Bosqich 5 — SEO, AI chat, bosh sahifa qayta tartibi
-
-- **SEO kalit so'zlar** (it ozuqasi Toshkent, Royal Canin Uzbekistan, sterilized mushuk ozuqasi va h.k.) `useSEO` fallbacklariga va kategoriya meta'lariga joylanadi
-- JSON-LD Product schema mavjud — pet-food maydonlari qo'shiladi (brand, category)
-- Sitemap avtomatik (mavjud `generate-sitemap` ishlaydi) — yangi kategoriyalar o'z-o'zidan tushadi
-- **Bosh sahifa bloklari:** Hero → Tezkor tanlov (It/Mushuk) → Mashhur brendlar → Premium → Veterinar tavsiya etadi → Chegirmadagi → Yangi kelgan → Quruq → Nam → Afzalliklar
-- **AI chat (`chat-ai` edge function)** system prompti pet-food konsultantga moslashtiriladi (yosh/maxsus ehtiyoj bo'yicha tavsiya + tibbiy tashxis qo'ymaslik + veterinarga yo'naltirish)
-- Dizayn aksentlari: iliq ranglar saqlanadi, hayvon ikonlari (lucide-react `Dog`, `Cat`, `PawPrint`), mahsulot kartasida qadoq hajmi + hayvon turi badge
+Hozir mavjud poydevor (React+TS, Supabase backend, admin panel, CMS, dinamik atributlar, savat, checkout, Telegram, SEO, UZ/RU) **to'liq saqlanadi**, faqat ustiga yangi modullar quriladi.
 
 ---
 
-## Texnik tafsilotlar
+## Bosqich 1 — Brendlar va Mahsulot Liniyalari (ekspert kontent)
 
-**Database o'zgarishlar (migration):**
-- `orders` ga `delivery_zone_id`, `delivery_type`, `payment_type`, `recurrence`, `pet_type` kolonkalari
-- Yangi `delivery_zones(id, name_uz, name_ru, price, is_active, sort_order)` + RLS + GRANT
-- `products.stock_quantity` mavjud bo'lsa ishlatiladi, yo'q bo'lsa qo'shiladi
+**Maqsad:** brend sahifasini "logo + tavsif"dan "brend pasporti"ga aylantirish.
 
-**Data inserts (migration emas, insert tool):**
-- Yangi categories, brands, attributes + options, checkout_fields, delivery_zones, FAQ entries, site_content yangilash
+- `brands` jadvaliga yangi maydonlar: `country`, `manufacturer`, `founded_year`, `segment` (premium/superpremium/holistic), `for_whom_uz/ru`, `advantages_uz/ru` (jsonb), `key_ingredients_uz/ru`, `vet_recommendation_uz/ru`, `naturino_note_uz/ru`, `history_uz/ru`
+- Yangi jadval **`product_lines`** (Royal Canin Sterilised, Pro Plan Sensitive, Monge Vet Solution, Farmina N&D va h.k.): brend bog'lanishi, slug, kim uchun, qanday muammo, tarkib, afzalliklar, yosh, qarshi ko'rsatmalar, banner
+- `products` ga `product_line_id` FK
+- Yangi sahifalar: `/brand/:slug` (kengaytirilgan dizayn — tarix, segment badge, afzalliklar grid, vet tavsiyasi, Naturino tavsiyasi, liniyalar carousel) va `/liniya/:slug` (liniya landingi — mos mahsulotlar bilan)
+- Admin panelda **Brands** va yangi **Product Lines** sahifalari (CMS uslubida tahrir)
 
-**Kod o'zgarishlar:**
-- `index.html`, `translations.ts`, `useSEO.tsx` — brending/SEO
-- `OrderForm.tsx`, `Checkout.tsx` — yangi maydonlar
-- `send-telegram/index.ts` — xabar formati
-- `chat-ai/index.ts` — yangi system prompt
-- `Index.tsx` (bosh sahifa) — yangi bloklar tartibi
-- `ProductCard.tsx`, `ProductDetails.tsx` — qadoq/hayvon turi/veterinar badge
-- `CatalogFilterSidebar.tsx` — tezkor filtr tugmalari
+## Bosqich 2 — Sifat Kafolati bo'limi
 
-**Saqlanadi (o'zgarmaydi):**
-React/TS frontend stack, Supabase auth/RLS, admin panel routelari, CMS, dinamik atributlar engine, savat tizimi, analitika, themes, UZ/RU til engine, sitemap, JSON-LD, image storage.
+**Maqsad:** ishonch hosil qilish.
+
+- Yangi jadval **`trust_documents`**: turi (sertifikat/import/sklad), title_uz/ru, description, file_url (PDF/image), media_type, sort_order
+- Storage bucket `trust-documents` (public read)
+- Sahifa `/sifat-kafolati` — bo'limlar: Original mahsulotlar, Rasmiy distributorlar, Sertifikatlar (PDF preview grid), Import hujjatlari, Saqlash standartlari, Ombor sharoitlari (video/rasm galereya)
+- Header menyusiga "Sifat kafolati" qo'shiladi
+- Admin sahifa: PDF/rasm/video yuklash, kategoriya tanlash, sortlash
+
+## Bosqich 3 — Pet Nutrition Center + Blog + Chuqur FAQ
+
+**Maqsad:** SEO trafik va ekspert maqomi.
+
+- Sahifa `/nutrition-center` — interaktiv tanlov: hayvon turi (it/mushuk) → yosh (puppy/kitten/adult/senior) → maxsus ehtiyoj. Natijada mos mahsulotlar + tavsiya matni
+- Tipik savollar bloki ("Mushugim sterilized…", "Allergiyasi bo'lsa…") — har biri AI chatga seed sifatida o'tadi
+- AI chat (`chat-ai` edge func) system prompti ushbu markaz ma'lumotlaridan foydalanadigan tarzda yangilanadi
+- Yangi jadval **`blog_posts`**: slug, title_uz/ru, excerpt_uz/ru, content_uz/ru (markdown), cover_image, category (oziqlantirish/vet/brendlar), reading_time, published_at, author, SEO meta'lar
+- Sahifalar `/blog` (kategoriya filtrli list) va `/blog/:slug` (article — JSON-LD Article schema, related posts)
+- Boshlanishiga 20 ta tayyor maqola insert qilinadi (UZ asosiy, RU tarjima)
+- FAQ kengaytiriladi: kategoriyalar (Oziqlantirish, Veterinar, Yetkazib berish, To'lov, Sifat) va 30+ savol qo'shiladi; JSON-LD FAQPage schema
+
+## Bosqich 4 — Naturino Club (loyalty) + Takroriy buyurtma
+
+**Maqsad:** mijozni qaytarish.
+
+- Yangi jadvallar: **`loyalty_accounts`** (user_id, balance, tier silver/gold/platinum, total_spent), **`loyalty_transactions`** (earn/spend, order_id, points, reason), **`subscriptions`** (user_id, product_id, frequency, next_delivery_at, status, address)
+- Qoidalar: 100 000 so'm = 1 ball, 100 ball = 10 000 so'm chegirma. Tier — yillik xaridga qarab
+- Checkoutda "Ball ishlatish" toggle + tier ko'rinishi
+- ProductDetails da "Takroriy buyurtma" tanlovi (har 2 hafta / oy / 2 oy)
+- Sahifa `/club` — balans, tarix, tier afzalliklari, faol obunalar
+- Admin: Loyalty va Subscriptions paneli + avtomatik eslatma (pg_cron + edge func → Telegram bildirish admin va mijozga)
+
+## Bosqich 5 — Veterinar bo'limi + Shahar/Yetkazib berish
+
+**Maqsad:** ekspert kontent + logistika.
+
+- Sahifa `/veterinar` — ekspert maqolalar (blog'dan `category=vet` filtrli), video maslahatlar (`vet_videos` jadvali: youtube_id, title, doctor_name), tavsiya etilgan mahsulotlar
+- Veterinar tavsiya badge ProductCardda mavjud — endi `vet_recommendation_text` bilan kengaytiriladi
+- `delivery_zones` mavjud — yangi 6 ta shahar (Toshkent, Samarqand, Buxoro, Andijon, Namangan, Farg'ona) narx/muddat bilan to'ldiriladi
+- Header'da shahar tanlash dropdown (localStorage) — narx va muddat avtomatik moslashadi
+- Catalog/Product sahifalarida tanlangan shahar uchun mavjudlik va yetkazish muddati ko'rinadi
+
+## Bosqich 6 — Bosh sahifa qayta tartibi + Instagram/Mijoz fikrlari
+
+**Maqsad:** yangi modullarni bosh sahifada birlashtirish.
+
+- Hero → Tezkor tanlov (It/Mushuk) → Premium brendlar carousel → **Veterinar tavsiya qiladi** bloki → Mashhur mahsulotlar → **Sifat kafolati** trust strip → **Blog** uchta yangi maqola → FAQ accordion → **Naturino Club** CTA → **Mijozlar fikrlari** (`testimonials` jadvali — admin tahrirlaydi) → **Instagram** bloki (`@username` orqali oxirgi 6 post, instagram embed) → **Yetkazib berish xaritasi** (6 shahar interaktiv)
+- Yangi jadval **`testimonials`**: mijoz nomi, hayvon turi, matn, rating, avatar
+- SEO: `index.html`, `useSEO` kalit so'zlari yangilanadi ("it ozuqasi Toshkent", "Royal Canin O'zbekiston", "sterilized mushuk ozuqasi", brend+shahar kombinatsiyalari)
+- Sitemap avtomatik yangilanadi (blog + brand + liniya + shahar marshrutlari)
 
 ---
 
-## Tavsiya: tasdiqlangandan keyin **Bosqich 1 + 2 + 3** birinchi iteratsiyada bajarish (kontent + tuzilma), keyin **Bosqich 4 + 5** ikkinchi iteratsiyada (biznes logika + AI/SEO). Shunday qilsak har bosqichni alohida ko'rib chiqsangiz bo'ladi.
+## Texnik xulosa
 
-Tasdiqlasangiz, **Bosqich 1 dan boshlayman.**
+**Yangi jadvallar:** `product_lines`, `trust_documents`, `blog_posts`, `loyalty_accounts`, `loyalty_transactions`, `subscriptions`, `vet_videos`, `testimonials` (+ `brands` va `products` ga kolonkalar)
+
+**Yangi storage:** `trust-documents`, `blog-images`
+
+**Yangi edge functions:** `loyalty-earn` (order webhookida), `subscription-reminder` (pg_cron)
+
+**Yangi sahifalar:** `/brand/:slug` (kengaytirilgan), `/liniya/:slug`, `/sifat-kafolati`, `/nutrition-center`, `/blog`, `/blog/:slug`, `/veterinar`, `/club`
+
+**Saqlanadi:** mavjud arxitektura, admin panel, CMS, dinamik atributlar, savat, checkout, Telegram, themes, UZ/RU, sitemap, JSON-LD.
+
+---
+
+## Tavsiya
+
+Reja katta — ketma-ket 6 bosqich. Har bosqich tugagach to'xtab natijani ko'rsataman, keyin keyingisiga o'taman.
+
+**Tasdiqlasangiz, Bosqich 1 (Brendlar + Mahsulot liniyalari) dan boshlayman.**
+
+Yoki agar boshqacha tartib (masalan, avval Blog+SEO, keyin loyalty) xohlasangiz ayting.

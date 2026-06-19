@@ -24,6 +24,8 @@ import { ChatWidget } from "@/components/chat/ChatWidget";
 
 import Index from "./pages/Index";
 import BrandDetails from "./pages/BrandDetails";
+import ProductLine from "./pages/ProductLine";
+import AdminProductLines from "./pages/admin/ProductLines";
 import Catalog from "./pages/Catalog";
 import ProductDetails from "./pages/ProductDetails";
 import About from "./pages/About";
@@ -97,6 +99,11 @@ const App = () => (
                               <Brands />
                             </ProtectedRoute>
                           } />
+                          <Route path="product-lines" element={
+                            <ProtectedRoute module="brands">
+                              <AdminProductLines />
+                            </ProtectedRoute>
+                          } />
                           <Route path="products" element={
                             <ProtectedRoute module="products">
                               <ProductsNew />
@@ -164,6 +171,7 @@ const App = () => (
                               <Route path="/catalog" element={<Catalog />} />
                               <Route path="/product/:id" element={<ProductDetails />} />
                               <Route path="/brand/:slug" element={<BrandDetails />} />
+                              <Route path="/liniya/:slug" element={<ProductLine />} />
                               <Route path="/about" element={<About />} />
                               <Route path="/contact" element={<Contact />} />
                               <Route path="/faq" element={<FAQ />} />
