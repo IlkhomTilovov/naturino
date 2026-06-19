@@ -4,24 +4,10 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { EditableText } from '@/components/EditableText';
 import { EditableLink } from '@/components/EditableLink';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 
 export function Footer() {
   const { language } = useLanguage();
   const { settings, getAddress, getWorkingHours } = useSystemSettings();
-
-  const { data: categories } = useQuery({
-    queryKey: ['footer-categories'],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('categories')
-        .select('id, name_uz, name_ru, slug')
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true });
-      return data || [];
-    },
-  });
 
   const contactPhone = settings?.contact_phone || '+998 90 123 45 67';
   const address = getAddress(language);
@@ -36,14 +22,14 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-secondary border-t border-border">
+    <footer className="bg-warm-cream border-t border-border">
       <div className="container mx-auto px-4 lg:px-8 py-16 md:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
           {/* Brand */}
-          <div className="space-y-6">
+          <div className="md:col-span-5 flex flex-col space-y-6">
             <Link to="/" className="inline-block">
-              <span className="font-serif text-2xl font-bold tracking-wider text-foreground">
-                PETFOOD <span className="text-primary">MARKET</span>
+              <span className="font-serif text-3xl md:text-4xl font-bold tracking-tight text-foreground uppercase">
+                Petfood <span className="text-accent">Market</span>
               </span>
             </Link>
             <EditableText
@@ -52,117 +38,135 @@ export function Footer() {
                 ? 'Премиум корма и аксессуары для собак и кошек. Быстрая доставка по Ташкенту и регионам.'
                 : "It va mushuklar uchun premium ozuqalar va aksessuarlar. Toshkent va viloyatlar bo'ylab tez yetkazib berish."}
               as="p"
-              className="text-muted-foreground text-sm leading-relaxed max-w-xs"
+              className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-sm font-medium opacity-90"
               multiline
               section="footer"
             />
-            <div className="flex gap-3">
+            <div className="flex space-x-4 pt-2">
               <EditableLink
                 contentKey="footer_social_telegram"
                 fallback={settings?.social_telegram || '#'}
-                className="w-10 h-10 border border-border rounded-sm flex items-center justify-center hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300 text-muted-foreground"
+                className="w-10 h-10 rounded-full bg-foreground flex items-center justify-center transition-transform hover:-translate-y-1 hover:bg-accent"
                 section="footer"
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-5 h-5 text-white" />
               </EditableLink>
               <EditableLink
                 contentKey="footer_social_instagram"
                 fallback={settings?.social_instagram || '#'}
-                className="w-10 h-10 border border-border rounded-sm flex items-center justify-center hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300 text-muted-foreground"
+                className="w-10 h-10 rounded-full bg-foreground flex items-center justify-center transition-transform hover:-translate-y-1 hover:bg-accent"
                 section="footer"
               >
-                <Instagram className="w-4 h-4" />
+                <Instagram className="w-5 h-5 text-white" />
               </EditableLink>
             </div>
           </div>
 
           {/* Navigation */}
-          <div>
+          <div className="md:col-span-3 flex flex-col space-y-6">
             <EditableText
               contentKey="footer_nav_title"
               fallback="Sahifalar"
               as="h4"
-              className="font-serif text-lg font-semibold text-foreground mb-6 tracking-wide"
+              className="font-serif text-xl font-bold text-foreground uppercase tracking-widest"
               section="footer"
             />
-            <ul className="space-y-3">
+            <nav className="flex flex-col space-y-3">
               {navLinks.map((link) => (
-                <li key={link.to}>
-                  <Link
-                    to={link.to}
-                    className="text-muted-foreground hover:text-primary text-sm transition-colors duration-300"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="text-muted-foreground hover:text-accent transition-colors font-medium"
+                >
+                  {link.label}
+                </Link>
               ))}
-            </ul>
+            </nav>
           </div>
 
-
-          {/* Contact - editable */}
-          <div>
+          {/* Contact */}
+          <div className="md:col-span-4 flex flex-col space-y-6">
             <EditableText
               contentKey="footer_contact_title"
               fallback="Bog'lanish"
               as="h4"
-              className="font-serif text-lg font-semibold text-foreground mb-6 tracking-wide"
+              className="font-serif text-xl font-bold text-foreground uppercase tracking-widest"
               section="footer"
             />
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 flex-shrink-0 mt-1 text-primary" />
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-accent mt-1 shrink-0" />
                 <EditableText
                   contentKey="footer_address"
-                  fallback={address || "Toshkent sh., Chilonzor tumani"}
+                  fallback={address || "Toshkent sh., Yunusobod tumani"}
                   as="span"
                   className="text-muted-foreground text-sm leading-relaxed"
                   multiline
                   section="footer"
                 />
-              </li>
-              <li className="flex items-center gap-3">
-                <Phone className="w-4 h-4 flex-shrink-0 text-primary" />
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-accent shrink-0" />
                 <EditableText
                   contentKey="footer_phone"
                   fallback={contactPhone}
                   as="span"
-                  className="text-muted-foreground text-sm"
+                  className="text-foreground font-bold text-sm"
                   section="footer"
                 />
-              </li>
-              <li className="flex items-start gap-3">
-                <Clock className="w-4 h-4 flex-shrink-0 mt-1 text-primary" />
+              </div>
+              <div className="flex items-start gap-3">
+                <Clock className="w-5 h-5 text-accent mt-0.5 shrink-0" />
                 <EditableText
                   contentKey="footer_working_hours"
                   fallback={workingHours || "Dush–Shan: 09:00–18:00"}
                   as="span"
-                  className="text-muted-foreground text-sm leading-relaxed"
+                  className="text-muted-foreground text-xs leading-tight"
                   multiline
                   section="footer"
                 />
-              </li>
-              <li>
+              </div>
+              <div className="pt-2">
                 <Link
                   to="/stats"
-                  className="inline-flex items-center gap-2 text-primary hover:underline text-sm font-medium"
+                  className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-bold text-accent border-b border-accent pb-1 hover:text-foreground hover:border-foreground transition-all"
                 >
                   <BarChart3 className="w-4 h-4" />
                   Sayt statistikasi
                 </Link>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Bottom */}
       <div className="border-t border-border">
-        <div className="container mx-auto px-4 py-6">
-          <p className="text-center text-xs text-muted-foreground tracking-wider">
+        <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-muted-foreground font-medium tracking-wide uppercase">
             © {new Date().getFullYear()}{' '}
-            <EditableText contentKey="footer_copyright" fallback={language === 'ru' ? 'PETFOOD MARKET. Все права защищены.' : 'PETFOOD MARKET. Barcha huquqlar himoyalangan.'} as="span" className="text-xs" section="footer" />
+            <EditableText
+              contentKey="footer_copyright"
+              fallback={language === 'ru' ? 'PETFOOD MARKET. Все права защищены.' : 'PETFOOD MARKET. Barcha huquqlar himoyalangan.'}
+              as="span"
+              className="text-xs"
+              section="footer"
+            />
           </p>
+          <div className="flex space-x-6">
+            <Link
+              to="/privacy"
+              className="text-[10px] uppercase tracking-tighter text-muted-foreground hover:text-accent transition-colors"
+            >
+              {language === 'ru' ? 'Политика конфиденциальности' : "Maxfiylik siyosati"}
+            </Link>
+            <Link
+              to="/terms"
+              className="text-[10px] uppercase tracking-tighter text-muted-foreground hover:text-accent transition-colors"
+            >
+              {language === 'ru' ? 'Публичная оферта' : "Foydalanish shartlari"}
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
