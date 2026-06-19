@@ -109,7 +109,7 @@ export function Header() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-9 absolute left-1/2 -translate-x-1/2">
+          <nav className="hidden lg:flex items-center gap-5 xl:gap-7 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => {
               const active = isActive(link.href);
               return (
