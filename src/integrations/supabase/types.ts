@@ -457,6 +457,39 @@ export type Database = {
         }
         Relationships: []
       }
+      delivery_zones: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name_ru: string
+          name_uz: string
+          price: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name_ru: string
+          name_uz: string
+          price?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name_ru?: string
+          name_uz?: string
+          price?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -506,8 +539,15 @@ export type Database = {
           customer_message: string | null
           customer_name: string
           customer_phone: string
+          delivery_address: string | null
+          delivery_city: string | null
+          delivery_type: string | null
+          delivery_zone_id: string | null
           id: string
           order_number: string
+          payment_type: string | null
+          pet_type: string | null
+          recurrence: string | null
           status: string
           total_price: number | null
           updated_at: string
@@ -519,8 +559,15 @@ export type Database = {
           customer_message?: string | null
           customer_name: string
           customer_phone: string
+          delivery_address?: string | null
+          delivery_city?: string | null
+          delivery_type?: string | null
+          delivery_zone_id?: string | null
           id?: string
           order_number: string
+          payment_type?: string | null
+          pet_type?: string | null
+          recurrence?: string | null
           status?: string
           total_price?: number | null
           updated_at?: string
@@ -532,8 +579,15 @@ export type Database = {
           customer_message?: string | null
           customer_name?: string
           customer_phone?: string
+          delivery_address?: string | null
+          delivery_city?: string | null
+          delivery_type?: string | null
+          delivery_zone_id?: string | null
           id?: string
           order_number?: string
+          payment_type?: string | null
+          pet_type?: string | null
+          recurrence?: string | null
           status?: string
           total_price?: number | null
           updated_at?: string
@@ -544,6 +598,13 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_delivery_zone_id_fkey"
+            columns: ["delivery_zone_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_zones"
             referencedColumns: ["id"]
           },
         ]
@@ -608,6 +669,7 @@ export type Database = {
           created_at: string
           description_ru: string | null
           description_uz: string | null
+          food_type: string | null
           full_description_ru: string | null
           full_description_uz: string | null
           fur_length: string[] | null
@@ -631,14 +693,18 @@ export type Database = {
           name_ru: string
           name_uz: string
           original_price: number | null
+          package_size: string | null
+          pet_type: string | null
           price: number | null
           sizes: string[] | null
           slug: string | null
           sort_order: number | null
+          stock_quantity: number
           target_keyword: string | null
           updated_at: string
           variants_ru: string[] | null
           variants_uz: string[] | null
+          vet_recommended: boolean
         }
         Insert: {
           application?: string[] | null
@@ -648,6 +714,7 @@ export type Database = {
           created_at?: string
           description_ru?: string | null
           description_uz?: string | null
+          food_type?: string | null
           full_description_ru?: string | null
           full_description_uz?: string | null
           fur_length?: string[] | null
@@ -671,14 +738,18 @@ export type Database = {
           name_ru: string
           name_uz: string
           original_price?: number | null
+          package_size?: string | null
+          pet_type?: string | null
           price?: number | null
           sizes?: string[] | null
           slug?: string | null
           sort_order?: number | null
+          stock_quantity?: number
           target_keyword?: string | null
           updated_at?: string
           variants_ru?: string[] | null
           variants_uz?: string[] | null
+          vet_recommended?: boolean
         }
         Update: {
           application?: string[] | null
@@ -688,6 +759,7 @@ export type Database = {
           created_at?: string
           description_ru?: string | null
           description_uz?: string | null
+          food_type?: string | null
           full_description_ru?: string | null
           full_description_uz?: string | null
           fur_length?: string[] | null
@@ -711,14 +783,18 @@ export type Database = {
           name_ru?: string
           name_uz?: string
           original_price?: number | null
+          package_size?: string | null
+          pet_type?: string | null
           price?: number | null
           sizes?: string[] | null
           slug?: string | null
           sort_order?: number | null
+          stock_quantity?: number
           target_keyword?: string | null
           updated_at?: string
           variants_ru?: string[] | null
           variants_uz?: string[] | null
+          vet_recommended?: boolean
         }
         Relationships: [
           {
