@@ -60,68 +60,6 @@ export const ShopByCategoriesSection = memo(function ShopByCategoriesSection() {
       aria-labelledby="shop-categories-title"
     >
       <div className="container mx-auto px-4 lg:px-8">
-        {/* Editorial header */}
-        <div
-          className={`flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 lg:mb-16 transition-all duration-700 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          <div className="max-w-2xl">
-            <EditableText
-              contentKey="cats_label"
-              fallback={t('XARID QILISH', 'ПОКУПАТЬ')}
-              as="span"
-              className="text-primary text-xs tracking-[0.3em] uppercase font-medium"
-              section="categories"
-            />
-            <h2
-              id="shop-categories-title"
-              className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight text-foreground mt-4"
-            >
-              <EditableText
-                contentKey="cats_title"
-                fallback={t('Sevimlingiz uchun toping', 'Найдите для любимца')}
-                as="span"
-                section="categories"
-              />
-            </h2>
-          </div>
-
-          <div className="flex items-end justify-between gap-6 md:flex-col md:items-end">
-            <p className="text-muted-foreground max-w-sm md:text-right">
-              <EditableText
-                contentKey="cats_subtitle"
-                fallback={t(
-                  "Hayvon turi va ozuqa formati bo'yicha tezda tanlang — yosh, salomatlik va ta'mga qarab.",
-                  'Выберите по типу питомца и формату корма — с учётом возраста, здоровья и вкуса.'
-                )}
-                as="span"
-                section="categories"
-              />
-            </p>
-
-            {/* Carousel controls */}
-            <div className="hidden md:flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => api?.scrollPrev()}
-                className="w-11 h-11 rounded-full border border-border bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex items-center justify-center"
-                aria-label={t('Oldingi', 'Назад')}
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => api?.scrollNext()}
-                className="w-11 h-11 rounded-full border border-border bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex items-center justify-center"
-                aria-label={t('Keyingi', 'Далее')}
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* CAROUSEL */}
         <div
           className={`transition-all duration-700 ${
