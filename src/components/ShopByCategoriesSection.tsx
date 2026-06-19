@@ -131,7 +131,7 @@ export const ShopByCategoriesSection = memo(function ShopByCategoriesSection() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
               {Array.from({ length: 3 }).map((_, i) => (
-                <Skeleton key={i} className="aspect-[4/5] w-full rounded-none" />
+              <Skeleton key={i} className="h-[80vh] w-full rounded-none" />
               ))}
             </div>
           ) : categories.length === 0 ? (
@@ -156,7 +156,7 @@ export const ShopByCategoriesSection = memo(function ShopByCategoriesSection() {
                       >
                         <Link
                           to={`/catalog?category=${cat.slug}`}
-                          className="group block relative overflow-hidden aspect-[4/5] bg-secondary"
+                          className="group block relative overflow-hidden h-[80vh] bg-secondary"
                           aria-label={name}
                         >
                           {cat.image ? (
