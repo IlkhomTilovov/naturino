@@ -37,10 +37,9 @@ export default function ProductLine() {
   useEffect(() => {
     if (!line?.id) return;
     (async () => {
-      const { data } = await supabase
-        .from('products')
+      const { data } = await (supabase.from('products') as any)
         .select('*')
-        .eq('product_line_id' as any, line.id)
+        .eq('product_line_id', line.id)
         .eq('is_active', true)
         .order('created_at', { ascending: false });
       setProducts((data || []) as Product[]);
