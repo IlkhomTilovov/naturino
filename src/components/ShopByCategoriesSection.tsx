@@ -142,17 +142,17 @@ export const ShopByCategoriesSection = memo(function ShopByCategoriesSection() {
             <>
               <Carousel
                 setApi={setApi}
-                opts={{ align: 'start', loop: categories.length > 3 }}
+                opts={{ align: 'start', loop: categories.length > 1 }}
                 className="w-full"
               >
-                <CarouselContent className="-ml-4 lg:-ml-6">
+                <CarouselContent className="-ml-0">
                   {categories.map((cat, i) => {
                     const name = language === 'ru' ? cat.name_ru : cat.name_uz;
                     const number = String(i + 1).padStart(2, '0');
                     return (
                       <CarouselItem
                         key={cat.id}
-                        className="pl-4 lg:pl-6 basis-full sm:basis-1/2 lg:basis-1/3"
+                        className="pl-0 basis-full"
                       >
                         <Link
                           to={`/catalog?category=${cat.slug}`}
