@@ -20,6 +20,7 @@ import {
   Award,
   Sliders,
   BarChart3,
+  Layers,
   LucideIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -40,6 +41,7 @@ const navItems: NavItem[] = [
   { title: 'Analytics', url: '/admin/analytics', icon: BarChart3, module: 'analytics' },
   { title: 'Buyurtmalar', url: '/admin/orders', icon: ShoppingCart, module: 'orders' },
   { title: 'Brendlar', url: '/admin/brands', icon: Award, module: 'brands' },
+  { title: 'Mahsulot liniyalari', url: '/admin/product-lines', icon: Layers, module: 'brands' },
   { title: 'Toifalar', url: '/admin/categories', icon: FolderTree, module: 'categories' },
   { title: 'Mahsulotlar', url: '/admin/products', icon: Package, module: 'products' },
   { title: 'Atributlar', url: '/admin/attributes', icon: Sliders, module: 'attributes' },
