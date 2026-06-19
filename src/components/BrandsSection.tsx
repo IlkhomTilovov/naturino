@@ -60,41 +60,43 @@ export const BrandsSection = memo(function BrandsSection() {
   return (
     <section
       ref={ref}
-      className="py-20 md:py-28 bg-background"
+      className="py-20 lg:py-32 bg-background border-t border-border/60"
       aria-labelledby="brands-section-title"
     >
       <div className="container mx-auto px-4 lg:px-8">
+        {/* Editorial header */}
         <div
-          className={`text-center mb-16 transition-all duration-700 ${
+          className={`flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 lg:mb-20 transition-all duration-700 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <EditableText
-            contentKey="brands_label"
-            fallback={language === 'ru' ? 'Бренды' : 'Brendlar'}
-            as="span"
-            className="text-primary text-xs tracking-[0.3em] uppercase font-medium"
-            section="brands"
-          />
-          <h2
-            id="brands-section-title"
-            className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4"
-          >
+          <div className="max-w-2xl">
             <EditableText
-              contentKey="brands_title"
-              fallback={language === 'ru' ? 'Наши бренды' : 'Bizning brendlarimiz'}
+              contentKey="brands_label"
+              fallback={language === 'ru' ? 'БРЕНДЫ' : 'BRENDLAR'}
               as="span"
-              className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold"
+              className="text-primary text-xs tracking-[0.3em] uppercase font-medium"
               section="brands"
             />
-          </h2>
-          <p className="text-muted-foreground text-sm md:text-base mt-4 max-w-2xl mx-auto">
+            <h2
+              id="brands-section-title"
+              className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight text-foreground mt-4"
+            >
+              <EditableText
+                contentKey="brands_title"
+                fallback={language === 'ru' ? 'Наши бренды' : 'Bizning brendlarimiz'}
+                as="span"
+                section="brands"
+              />
+            </h2>
+          </div>
+          <p className="text-muted-foreground max-w-sm md:text-right">
             <EditableText
               contentKey="brands_subtitle"
               fallback={
                 language === 'ru'
-                  ? 'Премиальные бренды, которым мы доверяем'
-                  : "Biz ishonadigan premium brendlar"
+                  ? 'Премиальные бренды, которым мы доверяем — официальные поставки и гарантия качества.'
+                  : "Biz ishonadigan premium brendlar — rasmiy yetkazib berish va sifat kafolati."
               }
               as="span"
               section="brands"
@@ -103,41 +105,26 @@ export const BrandsSection = memo(function BrandsSection() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="aspect-[4/5] rounded-sm" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="bg-background p-8 min-h-[280px]">
+                <Skeleton className="h-full w-full" />
+              </div>
             ))}
           </div>
         ) : (
-          <>
-            {/* Mobile single column */}
-            <div className="md:hidden grid grid-cols-1 gap-6">
-              {brands.map((brand, i) => (
-                <BrandCard
-                  key={brand.id}
-                  brand={brand}
-                  count={productCounts[brand.id] || 0}
-                  language={language}
-                  index={i}
-                  isVisible={isVisible}
-                />
-              ))}
-            </div>
-
-            {/* Desktop grid */}
-            <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {brands.map((brand, i) => (
-                <BrandCard
-                  key={brand.id}
-                  brand={brand}
-                  count={productCounts[brand.id] || 0}
-                  language={language}
-                  index={i}
-                  isVisible={isVisible}
-                />
-              ))}
-            </div>
-          </>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border">
+            {brands.map((brand, i) => (
+              <BrandCard
+                key={brand.id}
+                brand={brand}
+                count={productCounts[brand.id] || 0}
+                language={language}
+                index={i}
+                isVisible={isVisible}
+              />
+            ))}
+          </div>
         )}
       </div>
     </section>
@@ -155,67 +142,67 @@ interface BrandCardProps {
 const BrandCard = memo(function BrandCard({ brand, count, language, index, isVisible }: BrandCardProps) {
   const name = language === 'uz' ? brand.name_uz : brand.name_ru;
   const description = language === 'uz' ? brand.description_uz : brand.description_ru;
-  const ctaLabel = language === 'ru' ? 'Подробнее' : "Ko'rish";
+  const ctaLabel = language === 'ru' ? 'Смотреть бренд' : "Brendni ko'rish";
   const productsLabel = language === 'ru' ? 'товаров' : 'mahsulot';
+  const monogram = (name || '').trim().charAt(0).toUpperCase();
 
   return (
     <Link
       to={`/brand/${brand.slug}`}
-      className={`group relative block rounded-sm overflow-hidden bg-card border border-border hover:border-primary/40 transition-all duration-700 hover:-translate-y-1 hover:shadow-xl ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+      className={`group relative bg-background p-8 lg:p-10 flex flex-col min-h-[340px] hover:bg-secondary/40 transition-all duration-500 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
-      style={{ transitionDelay: `${index * 100}ms` }}
+      style={{ transitionDelay: `${index * 60}ms` }}
       aria-label={name}
     >
-      {/* Banner / image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-        {brand.banner || brand.logo ? (
-          <LazyImage
-            src={brand.banner || brand.logo}
-            alt={name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            wrapperClassName="w-full h-full"
+      {/* Top row: index + count */}
+      <div className="flex items-start justify-between mb-8">
+        <span className="text-xs tracking-[0.25em] uppercase text-muted-foreground">
+          {String(index + 1).padStart(2, '0')}
+        </span>
+        {count > 0 && (
+          <span className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground">
+            {count} {productsLabel}
+          </span>
+        )}
+      </div>
+
+      {/* Logo or serif monogram */}
+      <div className="mb-8 flex items-end h-20">
+        {brand.logo ? (
+          <img
+            src={brand.logo}
+            alt={`${name} logo`}
+            className="h-16 w-auto max-w-[180px] object-contain object-left grayscale group-hover:grayscale-0 transition-all duration-500"
+            loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-secondary">
-            <Award className="w-12 h-12 text-muted-foreground" />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
-
-        {/* Logo */}
-        {brand.logo && (
-          <div className="absolute top-4 left-4 bg-background/95 backdrop-blur-sm rounded-sm p-2 shadow-sm">
-            <img
-              src={brand.logo}
-              alt={`${name} logo`}
-              className="h-8 w-auto object-contain"
-              loading="lazy"
-            />
-          </div>
-        )}
-
-        {/* Count badge */}
-        {count > 0 && (
-          <div className="absolute top-4 right-4 bg-primary text-primary-foreground text-xs font-medium px-2.5 py-1 rounded-sm">
-            {count} {productsLabel}
-          </div>
+          <span className="font-serif text-6xl leading-none text-foreground/15 group-hover:text-primary/40 transition-colors duration-500">
+            {monogram || <Award className="w-12 h-12" />}
+          </span>
         )}
       </div>
 
-      {/* Content */}
-      <div className="p-5">
-        <h3 className="font-serif text-lg font-semibold text-foreground mb-1 line-clamp-1">
-          {name}
-        </h3>
-        {description && (
-          <p className="text-muted-foreground text-sm line-clamp-2 mb-4">{description}</p>
-        )}
-        <div className="flex items-center gap-2 text-primary text-xs tracking-wider uppercase font-medium group-hover:gap-3 transition-all">
-          <span>{ctaLabel}</span>
-          <ArrowRight className="w-4 h-4" />
-        </div>
-      </div>
+      {/* Brand name */}
+      <h3 className="font-serif text-3xl lg:text-4xl text-foreground leading-tight mb-3">
+        {name}
+      </h3>
+
+      {/* Description */}
+      {description && (
+        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-6">
+          {description}
+        </p>
+      )}
+
+      {/* CTA */}
+      <span className="mt-auto inline-flex items-center gap-2 text-xs tracking-[0.2em] uppercase text-foreground group-hover:gap-3 group-hover:text-primary transition-all">
+        {ctaLabel}
+        <ArrowRight className="w-4 h-4" />
+      </span>
+
+      {/* Underline accent on hover */}
+      <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-primary group-hover:w-full transition-all duration-500" />
     </Link>
   );
 });
