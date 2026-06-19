@@ -145,7 +145,7 @@ export const ShopByCategoriesSection = memo(function ShopByCategoriesSection() {
                 opts={{ align: 'start', loop: categories.length > 1 }}
                 className="w-full"
               >
-                <CarouselContent className="-ml-4 lg:-ml-6">
+                <CarouselContent className="-ml-0">
                   {categories.map((cat, i) => {
                     const name = language === 'ru' ? cat.name_ru : cat.name_uz;
                     const number = String(i + 1).padStart(2, '0');
