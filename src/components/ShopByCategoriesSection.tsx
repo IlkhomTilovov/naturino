@@ -152,7 +152,7 @@ export const ShopByCategoriesSection = memo(function ShopByCategoriesSection() {
                     return (
                       <CarouselItem
                         key={cat.id}
-                        className="pl-4 lg:pl-6 basis-full sm:basis-1/2 lg:basis-1/3"
+                        className="pl-0 basis-full"
                       >
                         <Link
                           to={`/catalog?category=${cat.slug}`}
