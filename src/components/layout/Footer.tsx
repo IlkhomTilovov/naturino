@@ -28,11 +28,11 @@ export function Footer() {
   const workingHours = getWorkingHours(language);
 
   const navLinks = [
-    { to: '/', label: 'Bosh sahifa' },
-    { to: '/catalog', label: 'Katalog' },
-    { to: '/about', label: 'Portfolio' },
-    { to: '/contact', label: 'Aloqa' },
-    { to: '/stats', label: 'Sayt statistikasi' },
+    { to: '/', label: language === 'ru' ? 'Главная' : 'Bosh sahifa' },
+    { to: '/catalog', label: language === 'ru' ? 'Каталог' : 'Katalog' },
+    { to: '/about', label: language === 'ru' ? 'О нас' : 'Biz haqimizda' },
+    { to: '/faq', label: 'FAQ' },
+    { to: '/contact', label: language === 'ru' ? 'Контакты' : 'Aloqa' },
   ];
 
   return (
@@ -43,12 +43,14 @@ export function Footer() {
           <div className="space-y-6">
             <Link to="/" className="inline-block">
               <span className="font-serif text-2xl font-bold tracking-wider text-foreground">
-                TILLA <span className="text-primary">KAMILOV</span>
+                PETFOOD <span className="text-primary">MARKET</span>
               </span>
             </Link>
             <EditableText
               contentKey="footer_description"
-              fallback="Zamonaviy, sifatli va individual buyurtma asosida ishlab chiqariladigan premium mebellar."
+              fallback={language === 'ru'
+                ? 'Премиум корма и аксессуары для собак и кошек. Быстрая доставка по Ташкенту и регионам.'
+                : "It va mushuklar uchun premium ozuqalar va aksessuarlar. Toshkent va viloyatlar bo'ylab tez yetkazib berish."}
               as="p"
               className="text-muted-foreground text-sm leading-relaxed max-w-xs"
               multiline
@@ -185,7 +187,7 @@ export function Footer() {
         <div className="container mx-auto px-4 py-6">
           <p className="text-center text-xs text-muted-foreground tracking-wider">
             © {new Date().getFullYear()}{' '}
-            <EditableText contentKey="footer_copyright" fallback="TILLA KAMILOV. Barcha huquqlar himoyalangan." as="span" className="text-xs" section="footer" />
+            <EditableText contentKey="footer_copyright" fallback={language === 'ru' ? 'PETFOOD MARKET. Все права защищены.' : 'PETFOOD MARKET. Barcha huquqlar himoyalangan.'} as="span" className="text-xs" section="footer" />
           </p>
         </div>
       </div>

@@ -24,10 +24,11 @@ export function Header() {
   }, []);
 
   const navLinks = [
-    { href: '/', label: 'Bosh sahifa' },
-    { href: '/catalog', label: 'Katalog' },
-    { href: '/about', label: 'Portfolio' },
-    { href: '/contact', label: 'Aloqa' },
+    { href: '/', label: language === 'ru' ? 'Главная' : 'Bosh sahifa' },
+    { href: '/catalog', label: language === 'ru' ? 'Каталог' : 'Katalog' },
+    { href: '/about', label: language === 'ru' ? 'О нас' : 'Biz haqimizda' },
+    { href: '/faq', label: 'FAQ' },
+    { href: '/contact', label: language === 'ru' ? 'Контакты' : 'Aloqa' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -46,7 +47,7 @@ export function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <span className="font-serif text-2xl md:text-3xl font-bold tracking-wider text-foreground">
-              TILLA<span className="text-primary"> KAMILOV</span>
+              PETFOOD<span className="text-primary"> MARKET</span>
             </span>
           </Link>
 
@@ -100,7 +101,7 @@ export function Header() {
 
             {/* CTA Button - desktop */}
             <Button asChild className="hidden md:inline-flex bg-primary text-primary-foreground hover:bg-primary/90 rounded-sm tracking-wider text-xs uppercase px-6">
-              <Link to="/contact">Bog'lanish</Link>
+              <Link to="/contact">{language === 'ru' ? 'Связаться' : "Bog'lanish"}</Link>
             </Button>
 
             {/* Cart */}
