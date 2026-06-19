@@ -95,9 +95,27 @@ export function EditorPanel() {
       // Save reference to old image for deletion
       const oldImageUrl = editValue || '';
 
+      // Verify auth session before upload
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        const friendly = await logAdminError('hero-image-upload', new Error('No active session'), {
+          contentKey: selectedElement.contentKey,
+        });
+        toast({ variant: 'destructive', title: 'Xatolik', description: friendly });
+        return;
+      }
+
       const fileExt = file.name.split('.').pop();
       const fileName = `${selectedElement.contentKey}-${Date.now()}.${fileExt}`;
       const filePath = `site-content/${fileName}`;
+
+      console.info('[image-upload] starting', {
+        contentKey: selectedElement.contentKey,
+        filePath,
+        size: file.size,
+        type: file.type,
+        userId: session.user.id,
+      });
 
       const { error: uploadError } = await supabase.storage
         .from('product-images')
@@ -120,16 +138,23 @@ export function EditorPanel() {
 
       setEditValue(publicUrl);
       setHasUnsavedChanges(false);
-      
+
+      console.info('[image-upload] success', { contentKey: selectedElement.contentKey, publicUrl });
       toast({ title: 'Saqlandi', description: 'Rasm muvaffaqiyatli yangilandi' });
     } catch (error: any) {
-      console.error('Error uploading image:', error);
-      toast({ variant: 'destructive', title: 'Xatolik', description: error.message || 'Rasmni yuklashda xatolik' });
+      const friendly = await logAdminError('hero-image-upload', error, {
+        contentKey: selectedElement?.contentKey,
+        fileName: file?.name,
+        fileSize: file?.size,
+        fileType: file?.type,
+      });
+      toast({ variant: 'destructive', title: 'Rasmni yuklashda xatolik', description: friendly });
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
+
 
   if (!isPanelOpen) return null;
 
