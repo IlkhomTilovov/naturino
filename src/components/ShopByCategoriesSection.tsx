@@ -142,7 +142,7 @@ export const ShopByCategoriesSection = memo(function ShopByCategoriesSection() {
             <>
               <Carousel
                 setApi={setApi}
-                opts={{ align: 'start', loop: categories.length > 3 }}
+                opts={{ align: 'start', loop: categories.length > 1 }}
                 className="w-full"
               >
                 <CarouselContent className="-ml-4 lg:-ml-6">
