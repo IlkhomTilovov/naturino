@@ -9,7 +9,7 @@ import { useSEO } from '@/hooks/useSEO';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { EditableText } from '@/components/EditableText';
 import { EditableImage } from '@/components/EditableImage';
-import { BrandsSection } from '@/components/BrandsSection';
+import { ShopByCategoriesSection } from '@/components/ShopByCategoriesSection';
 import { useState, useEffect, useRef } from 'react';
 
 import heroImg from '@/assets/naturino-hero.jpg';
@@ -178,8 +178,8 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ============ BRANDS ============ */}
-      <BrandsSection />
+      {/* ============ SHOP BY CATEGORIES ============ */}
+      <ShopByCategoriesSection />
 
       {/* ============ ABOUT — alternating ============ */}
       <section ref={sAbout.ref} className="py-20 lg:py-32 bg-secondary/30">
