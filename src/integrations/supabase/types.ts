@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_error_logs: {
+        Row: {
+          context: string
+          created_at: string
+          details: Json | null
+          id: string
+          message: string
+          user_id: string | null
+          user_role: string | null
+        }
+        Insert: {
+          context: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          message: string
+          user_id?: string | null
+          user_role?: string | null
+        }
+        Update: {
+          context?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          message?: string
+          user_id?: string | null
+          user_role?: string | null
+        }
+        Relationships: []
+      }
       attribute_groups: {
         Row: {
           category_id: string | null
