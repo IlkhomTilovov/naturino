@@ -1,9 +1,5 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { createClient } from 'npm:@supabase/supabase-js@2'
+import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 
 const ALLOWED_BUCKETS = new Set(['product-images', 'brand-images'])
 const MAX_FILE_SIZE = 5 * 1024 * 1024
@@ -59,7 +55,12 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: 'Sizda rasm yuklash uchun ruxsat yo\'q.' }, 403)
     }
 
-    const formData = await req.formData()
+    let formData: FormData
+    try {
+      formData = await req.formData()
+    } catch (_error) {
+      return jsonResponse({ error: 'Rasm fayli noto\'g\'ri formatda yuborildi.' }, 400)
+    }
     const file = formData.get('file')
     const bucket = String(formData.get('bucket') ?? 'product-images')
     const contentKey = String(formData.get('contentKey') ?? 'site-image')
