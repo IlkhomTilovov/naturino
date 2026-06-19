@@ -84,62 +84,62 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
 
-      {/* ============ HERO — editorial split ============ */}
-      <section className="relative">
-        <div className="container mx-auto px-4 lg:px-8 pt-10 lg:pt-16 pb-16 lg:pb-24">
-          {/* Top meta strip */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-10 lg:pb-16 border-b border-border/60">
+      {/* ============ HERO — full-bleed image with overlay text ============ */}
+      <section className="relative w-full min-h-[88vh] lg:min-h-[92vh] flex flex-col overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0 z-0">
+          <EditableImage
+            contentKey="hero_image"
+            fallbackSrc={heroImg}
+            alt="Naturino premium pet food"
+            className="w-full h-full object-cover"
+            wrapperClassName="w-full h-full"
+            section="hero"
+          />
+          {/* Legibility overlays */}
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/20 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/40 pointer-events-none" />
+        </div>
+
+        {/* Top meta strip */}
+        <div className="relative z-10 container mx-auto px-4 lg:px-8 pt-8 lg:pt-12">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-6 lg:pb-8 border-b border-foreground/15 [&_a]:pointer-events-auto [&_[data-editable]]:pointer-events-auto">
             <EditableText
               contentKey="hero_eyebrow"
               fallback="EST. 2020 — TOSHKENT"
               as="span"
-              className="text-xs tracking-[0.3em] uppercase text-muted-foreground"
+              className="text-xs tracking-[0.3em] uppercase text-foreground/70"
               section="hero"
             />
             <EditableText
               contentKey="hero_meta"
               fallback="Premium pet nutrition · Rasmiy distribyutor"
               as="span"
-              className="text-xs tracking-wider uppercase text-muted-foreground hidden md:inline"
+              className="text-xs tracking-wider uppercase text-foreground/70 hidden md:inline"
               section="hero"
             />
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 pt-12 lg:pt-20">
+        {/* Main content overlaid */}
+        <div className="relative z-10 flex-1 container mx-auto px-4 lg:px-8 py-12 lg:py-20 flex items-center pointer-events-none">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 w-full [&_a]:pointer-events-auto [&_button]:pointer-events-auto [&_[data-editable]]:pointer-events-auto">
             {/* Headline */}
             <div className="lg:col-span-7">
-              <h1 className="font-serif text-[2.75rem] sm:text-6xl lg:text-[5.5rem] leading-[0.95] tracking-tight text-foreground">
-                <EditableText
-                  contentKey="hero_title_1"
-                  fallback="Sevgi bilan"
-                  as="span"
-                  className="block"
-                  section="hero"
-                />
-                <EditableText
-                  contentKey="hero_title_2"
-                  fallback="tayyorlangan ovqat."
-                  as="span"
-                  className="block italic text-primary/90"
-                  section="hero"
-                />
-                <EditableText
-                  contentKey="hero_title_3"
-                  fallback="Sog'liq bilan o'sgan do'st."
-                  as="span"
-                  className="block"
-                  section="hero"
-                />
+              <h1 className="font-serif text-[2.75rem] sm:text-6xl lg:text-[5.5rem] leading-[0.95] tracking-tight text-foreground drop-shadow-sm">
+                <EditableText contentKey="hero_title_1" fallback="Sevgi bilan" as="span" className="block" section="hero" />
+                <EditableText contentKey="hero_title_2" fallback="tayyorlangan ovqat." as="span" className="block italic text-primary" section="hero" />
+                <EditableText contentKey="hero_title_3" fallback="Sog'liq bilan o'sgan do'st." as="span" className="block" section="hero" />
               </h1>
 
-              <div className="mt-10 flex flex-wrap items-center gap-4">
-                <Button asChild size="lg" className="rounded-full px-8 h-14 text-sm tracking-wider uppercase">
+              <div className="mt-8 lg:mt-10 flex flex-wrap items-center gap-4">
+                <Button asChild size="lg" className="rounded-full px-8 h-14 text-sm tracking-wider uppercase shadow-lg">
                   <Link to="/catalog">
                     <EditableText contentKey="hero_cta_1" fallback="Mahsulotlarni ko'rish" as="span" section="hero" />
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>
                 </Button>
-                <Button asChild variant="ghost" size="lg" className="rounded-full h-14 text-sm tracking-wider uppercase">
+                <Button asChild variant="outline" size="lg" className="rounded-full h-14 px-8 text-sm tracking-wider uppercase bg-background/60 backdrop-blur-sm border-foreground/20">
                   <Link to="/about">
                     <EditableText contentKey="hero_cta_2" fallback="Naturino haqida" as="span" section="hero" />
                   </Link>
@@ -147,43 +147,33 @@ export default function Index() {
               </div>
             </div>
 
-            {/* Side description */}
+            {/* Side description + stats */}
             <div className="lg:col-span-5 lg:pt-6">
-              <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-md">
-                <EditableText
-                  contentKey="hero_sub"
-                  fallback="Naturino — itlar va mushuklar uchun mutaxassislar tomonidan ishlab chiqilgan premium ozuqa brendi. Tabiiy ingredientlar, veterinariya nazorati va sevimli do'stingizning har bir hayot bosqichi uchun aniq formulalar."
-                  as="span"
-                  section="hero"
-                />
-              </p>
-              <div className="mt-8 grid grid-cols-3 gap-6 max-w-md">
-                <div>
-                  <div className="font-serif text-3xl text-foreground">35+</div>
-                  <EditableText contentKey="hero_stat_1" fallback="Ingredient turi" as="p" className="text-xs text-muted-foreground mt-1" section="hero" />
-                </div>
-                <div>
-                  <div className="font-serif text-3xl text-foreground">12</div>
-                  <EditableText contentKey="hero_stat_2" fallback="Maxsus liniya" as="p" className="text-xs text-muted-foreground mt-1" section="hero" />
-                </div>
-                <div>
-                  <div className="font-serif text-3xl text-foreground">5K+</div>
-                  <EditableText contentKey="hero_stat_3" fallback="Baxtli mijoz" as="p" className="text-xs text-muted-foreground mt-1" section="hero" />
+              <div className="bg-background/60 backdrop-blur-sm rounded-sm p-6 lg:p-8 max-w-md border border-foreground/10">
+                <p className="text-base lg:text-lg text-foreground/80 leading-relaxed">
+                  <EditableText
+                    contentKey="hero_sub"
+                    fallback="Naturino — itlar va mushuklar uchun mutaxassislar tomonidan ishlab chiqilgan premium ozuqa brendi. Tabiiy ingredientlar, veterinariya nazorati va sevimli do'stingizning har bir hayot bosqichi uchun aniq formulalar."
+                    as="span"
+                    section="hero"
+                  />
+                </p>
+                <div className="mt-6 grid grid-cols-3 gap-4 pt-6 border-t border-foreground/10">
+                  <div>
+                    <div className="font-serif text-3xl text-foreground">35+</div>
+                    <EditableText contentKey="hero_stat_1" fallback="Ingredient turi" as="p" className="text-xs text-muted-foreground mt-1" section="hero" />
+                  </div>
+                  <div>
+                    <div className="font-serif text-3xl text-foreground">12</div>
+                    <EditableText contentKey="hero_stat_2" fallback="Maxsus liniya" as="p" className="text-xs text-muted-foreground mt-1" section="hero" />
+                  </div>
+                  <div>
+                    <div className="font-serif text-3xl text-foreground">5K+</div>
+                    <EditableText contentKey="hero_stat_3" fallback="Baxtli mijoz" as="p" className="text-xs text-muted-foreground mt-1" section="hero" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Hero image — full bleed */}
-          <div className="mt-12 lg:mt-20 relative aspect-[16/8] overflow-hidden rounded-sm">
-            <EditableImage
-              contentKey="hero_image"
-              fallbackSrc={heroImg}
-              alt="Naturino premium pet food"
-              className="w-full h-full object-cover"
-              wrapperClassName="w-full h-full"
-              section="hero"
-            />
           </div>
         </div>
       </section>
