@@ -1,86 +1,98 @@
-## Dinamik Mahsulot Atributlari Tizimi
+# PETFOOD MARKET — Loyihani pet-food yo'nalishiga moslashtirish
 
-TILLA KAMILOV uchun to'liq dinamik, ko'p tilli, CMS-boshqariladigan atributlar tizimi qo'shiladi. Hozirgi `sizes/colors/materials` o'rniga har bir kategoriya o'z atributlariga ega bo'ladi (Zamok, Ariston, Eshik, Lesa va h.k.).
+Mavjud texnik arxitektura (React + Supabase + admin panel + CMS + dinamik atributlar + Telegram + SEO + UZ/RU) **to'liq saqlanadi**. Faqat kontent, kategoriyalar, atributlar, biznes logika va dizayn aksenti pet-food yo'nalishiga moslashadi.
 
-### 1. Database (migration)
+Ish hajmi katta bo'lgani uchun **5 ta bosqichga** ajratiladi. Har bir bosqich o'zicha ishlaydigan, sinab ko'rsa bo'ladigan natija beradi.
 
-Yangi jadvallar:
-- **`attribute_groups`** — atribut guruhlari (Xavfsizlik, Texnik xususiyatlar, O'lchamlar...). Maydonlar: `name_uz`, `name_ru`, `slug`, `category_id` (nullable — global guruh uchun), `sort_order`, `is_active`.
-- **`attributes`** — atributlar. Maydonlar: `group_id`, `name_uz`, `name_ru`, `slug`, `field_type` (`text|number|select|multiselect|boolean|textarea`), `unit`, `placeholder_uz`, `placeholder_ru`, `is_required`, `is_filterable`, `show_in_card`, `sort_order`, `is_active`.
-- **`attribute_options`** — select/multiselect uchun variantlar. Maydonlar: `attribute_id`, `label_uz`, `label_ru`, `value`, `sort_order`.
-- **`product_attribute_values`** — mahsulot qiymatlari. Maydonlar: `product_id`, `attribute_id`, `value_text`, `value_number`, `value_boolean`, `value_json` (multiselect uchun array).
+---
 
-RLS:
-- SELECT — barchaga ochiq.
-- ALL — `admin` yoki `editor`.
+## Bosqich 1 — Brending va kontent migratsiyasi
 
-Indexlar: `attributes(group_id)`, `product_attribute_values(product_id)`, `product_attribute_values(attribute_id)`, `attribute_groups(category_id)`.
+**Maqsad:** "MIR MEXA / mo'yna" izlarini olib tashlash, "PETFOOD MARKET" pozitsiyasini joriy qilish.
 
-`attribute_groups` `category_id` `categories.id` ga bog'lanadi, `ON DELETE CASCADE`. Boshqa FK lar ham CASCADE.
+- `system_settings` da brand_name, logo matni, footer, contact ma'lumotlari → PETFOOD MARKET
+- `site_content` (CMS) yozuvlarini UZ/RU pet-food matnlari bilan yangilash:
+  - Hero: "It va mushuklar uchun sifatli ozuqalar"
+  - Afzalliklar bloki (tez yetkazib berish, original, veterinar tavsiya, qulay buyurtma)
+  - About, Contact, Footer matnlari
+- `index.html` — sitewide title, description, OG:title PETFOOD MARKETga
+- FAQ sahifasi yangi 8 ta savol bilan to'ldiriladi (insert orqali)
+- Header/Footer/Navigation matnlari `translations.ts` da yangilanadi
 
-### 2. Admin panel
+## Bosqich 2 — Kategoriyalar va brendlar
 
-**Yangi sahifa `/admin/attributes`** (`src/pages/admin/Attributes.tsx`):
-- Kategoriya tanlash (dropdown).
-- Tanlangan kategoriya uchun guruhlar ro'yxati (drag-sort, qo'shish/tahrirlash/o'chirish).
-- Har bir guruh ichida atributlar (modal forma orqali tahrirlash, field_type'ga qarab options bo'limi paydo bo'ladi).
-- Sidebar'ga "Atributlar" elementi qo'shiladi (`Brendlar` va `Toifalar` orasidan keyin).
+**Maqsad:** Eski kiyim kategoriyalarini olib tashlab, 16 ta pet-food kategoriya yaratish.
 
-**Mahsulot formasi (`ProductsNew.tsx`) yangilanadi:**
-- Hozirgi `O'lchamlar / Ranglar / Materiallar` tab/qismi olib tashlanmaydi (legacy uchun saqlanadi), lekin yangi **"Xususiyatlar"** tab kategoriya tanlanganda dinamik atributlarni yuklaydi.
-- `useCategoryAttributes(categoryId)` hook orqali guruh + atributlar olinadi.
-- React Hook Form'da har bir atribut uchun `attr_<id>` field. `field_type`ga qarab to'g'ri komponent:
-  - `text` → Input
-  - `number` → Input type=number + unit suffix
-  - `textarea` → Textarea
-  - `boolean` → Switch
-  - `select` → Select (shadcn)
-  - `multiselect` → checkbox grid / badge selector
-- Tab almashtirilganda qiymatlar saqlanadi (form state'da).
-- Yuklash paytida Skeleton.
-- Saqlashda `product_attribute_values` upsert qilinadi (eski qiymatlar o'chirilib qayta yoziladi yoki upsert by `(product_id, attribute_id)`).
+- Eski `categories` yozuvlari deaktivatsiya
+- 16 ta yangi kategoriya (Itlar uchun ozuqa, Mushuklar uchun ozuqa, Quruq, Nam, Veterinary, Puppy, Kitten, Adult, Senior, Sterilized, Sensitive, Urinary, Hypoallergenic, Premium, Treats, Aksessuarlar) — har birida slug, UZ/RU nom + tavsif, SEO title/description
+- Premium pet-food brendlar (Royal Canin, Pro Plan, Hill's, Acana, Orijen, Brit, Monge, Farmina, Pedigree, Whiskas) `brands` jadvaliga insert
+- Hero ostida **tezkor filtr tugmalari:** "Itlar uchun" / "Mushuklar uchun"
 
-### 3. Public — Mahsulot sahifasi
+## Bosqich 3 — Dinamik atributlar tizimi
 
-`ProductDetails.tsx` ga **"Xususiyatlar"** bloki qo'shiladi:
-- Guruhlar bo'yicha akkordion / kartalar.
-- Har bir atribut: nom + qiymat (number'da unit, boolean'da ✔/—, select'da label).
-- Mobile responsive jadval ko'rinishi.
-- Skeleton loader.
+**Maqsad:** Mavjud `attributes` + `attribute_options` jadvallariga pet-food atributlarini joylash.
 
-### 4. Catalog filterlari
+Atribut guruhlari va opsiyalar:
+- Hayvon turi (it/mushuk) — **filter**
+- Yosh guruhi (puppy/kitten/adult/senior) — **filter**
+- Ozuqa turi (dry/wet/treat/veterinary/premium) — **filter**
+- Qadoq hajmi (400g…15kg) — **filter** + variant uchun
+- Ta'm (tovuq/mol/baliq/qo'y/kurka/losos/o'rdak) — **filter**
+- Maxsus ehtiyoj (sterilized/sensitive/urinary/hypoallergenic/hairball/weight/digestive/skin&coat) — **filter**
+- Kelib chiqish mamlakati — **filter**
+- Veterinar tavsiyasi (ha/yo'q) — **filter** + badge
+- Tarkib atributlari (protein %, yog' %, kletchatka %, namlik %, vitaminlar, mineral, asosiy ingredient, allergensiz, grain-free)
 
-`CatalogFilterSidebar.tsx`:
-- Tanlangan kategoriya bo'lsa, `is_filterable=true` atributlar dinamik filter sifatida yuklanadi.
-- `select/multiselect/boolean` → checkbox/switch.
-- `number` → range slider (min/max).
-- Filterlash logikasi `useProducts` hook'ida — `product_attribute_values` jadvalidan IN/range so'rov.
+`CatalogFilterSidebar` shu atributlarni avtomatik o'qib filtrlarni chiqaradi (mavjud arxitektura buni qo'llab-quvvatlaydi).
 
-### 5. SEO
+## Bosqich 4 — Mahsulot/Checkout/Telegram biznes logikasi
 
-`ProductDetails.tsx` JSON-LD `Product` schema'siga `additionalProperty` array qo'shiladi (har bir atribut uchun `PropertyValue`). Meta description'ga asosiy texnik xususiyatlardan parcha qo'shilishi mumkin.
+**Maqsad:** Pet-food spetsifik logika qo'shish.
 
-### 6. Hooks va types
+- **Ombor qoldig'i:** `products.stock_quantity` ishlatiladi; 0 bo'lsa "Tugagan" badge + savatga qo'shish bloklanadi
+- **Qadoq variantlari:** har bir variant alohida product yoki product_attribute_values orqali — narx + qoldiq alohida
+- **Veterinar tavsiyasi badge** ProductCard va ProductDetails da
+- **Takroriy buyurtma:** checkoutda "Har 2 hafta / Har oy / Bir martalik" tanlovi (`orders` ga `recurrence` kolonkasi qo'shiladi)
+- **Yetkazib berish zonalari:** yangi `delivery_zones` jadvali (Toshkent shaharlari/viloyatlar + narx), admin paneldan boshqariladi
+- **Checkout maydonlari** `checkout_fields` orqali yangilanadi: Ism, Telefon, Manzil, Shahar/Tuman (zone select), Hayvon turi, Izoh, To'lov turi, Yetkazib berish turi
+- **Telegram xabar formati** (`send-telegram` edge function) yangilanadi — buyurtma raqami, mijoz, manzil, mahsulotlar (qadoq+soni), summa, yetkazib berish turi, to'lov turi
+- ProductDetails sahifasi pet-food maydonlari (tarkib, porsiya jadvali, saqlash sharoiti, maxsus ehtiyoj mosligi) bilan kengaytiriladi
 
-- `src/hooks/useAttributes.tsx` — `useAttributeGroups(categoryId)`, `useAttributes(groupId?)`, `useCategoryAttributes(categoryId)` (groups + attributes + options bitta strukturada), `useProductAttributeValues(productId)`.
-- `src/lib/schemas/attribute.ts` — Zod schemalari.
-- TS types Supabase auto-generate.
+## Bosqich 5 — SEO, AI chat, bosh sahifa qayta tartibi
 
-### 7. Texnik tafsilotlar
+- **SEO kalit so'zlar** (it ozuqasi Toshkent, Royal Canin Uzbekistan, sterilized mushuk ozuqasi va h.k.) `useSEO` fallbacklariga va kategoriya meta'lariga joylanadi
+- JSON-LD Product schema mavjud — pet-food maydonlari qo'shiladi (brand, category)
+- Sitemap avtomatik (mavjud `generate-sitemap` ishlaydi) — yangi kategoriyalar o'z-o'zidan tushadi
+- **Bosh sahifa bloklari:** Hero → Tezkor tanlov (It/Mushuk) → Mashhur brendlar → Premium → Veterinar tavsiya etadi → Chegirmadagi → Yangi kelgan → Quruq → Nam → Afzalliklar
+- **AI chat (`chat-ai` edge function)** system prompti pet-food konsultantga moslashtiriladi (yosh/maxsus ehtiyoj bo'yicha tavsiya + tibbiy tashxis qo'ymaslik + veterinarga yo'naltirish)
+- Dizayn aksentlari: iliq ranglar saqlanadi, hayvon ikonlari (lucide-react `Dog`, `Cat`, `PawPrint`), mahsulot kartasida qadoq hajmi + hayvon turi badge
 
-- TanStack Query mavjud emas — loyiha `useState/useEffect` pattern'idan foydalanadi, shu pattern'ga moslashamiz (caching uchun oddiy in-memory map).
-- Hech qaysi mavjud `sizes/colors/materials` ustunlari o'chirilmaydi (orqaga moslik).
-- `permissions.ts` ga `attributes` moduli qo'shiladi.
-- Translations'ga UZ/RU label'lar.
+---
 
-### Tartib
+## Texnik tafsilotlar
 
-1. Migration (4 jadval + RLS + indexlar).
-2. Hooks + types.
-3. Admin `/admin/attributes` sahifa + sidebar + route.
-4. `ProductsNew.tsx` ga dinamik atributlar tab.
-5. `ProductDetails.tsx` ga xususiyatlar bloki + JSON-LD.
-6. Catalog filter integratsiyasi.
-7. QA.
+**Database o'zgarishlar (migration):**
+- `orders` ga `delivery_zone_id`, `delivery_type`, `payment_type`, `recurrence`, `pet_type` kolonkalari
+- Yangi `delivery_zones(id, name_uz, name_ru, price, is_active, sort_order)` + RLS + GRANT
+- `products.stock_quantity` mavjud bo'lsa ishlatiladi, yo'q bo'lsa qo'shiladi
 
-Tasdiqlasangiz, migration'dan boshlayman.
+**Data inserts (migration emas, insert tool):**
+- Yangi categories, brands, attributes + options, checkout_fields, delivery_zones, FAQ entries, site_content yangilash
+
+**Kod o'zgarishlar:**
+- `index.html`, `translations.ts`, `useSEO.tsx` — brending/SEO
+- `OrderForm.tsx`, `Checkout.tsx` — yangi maydonlar
+- `send-telegram/index.ts` — xabar formati
+- `chat-ai/index.ts` — yangi system prompt
+- `Index.tsx` (bosh sahifa) — yangi bloklar tartibi
+- `ProductCard.tsx`, `ProductDetails.tsx` — qadoq/hayvon turi/veterinar badge
+- `CatalogFilterSidebar.tsx` — tezkor filtr tugmalari
+
+**Saqlanadi (o'zgarmaydi):**
+React/TS frontend stack, Supabase auth/RLS, admin panel routelari, CMS, dinamik atributlar engine, savat tizimi, analitika, themes, UZ/RU til engine, sitemap, JSON-LD, image storage.
+
+---
+
+## Tavsiya: tasdiqlangandan keyin **Bosqich 1 + 2 + 3** birinchi iteratsiyada bajarish (kontent + tuzilma), keyin **Bosqich 4 + 5** ikkinchi iteratsiyada (biznes logika + AI/SEO). Shunday qilsak har bosqichni alohida ko'rib chiqsangiz bo'ladi.
+
+Tasdiqlasangiz, **Bosqich 1 dan boshlayman.**

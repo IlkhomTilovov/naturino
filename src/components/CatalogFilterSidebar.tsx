@@ -231,30 +231,30 @@ export function CatalogFilterSidebar({ categories, onApply, initialFilters, dyna
 
       <Separator />
 
-      {/* 3. Materials - dynamic from DB */}
+      {/* Ozuqa turi (materials column repurposed) */}
       {renderDynamicCheckboxGroup(
-        isUz ? 'Material turi' : 'Тип материала',
+        isUz ? 'Ozuqa turi' : 'Тип корма',
         dynamicOptions?.materials || [],
         'materials'
       )}
 
-      {/* 4. Colors - dynamic from DB */}
+      {/* Ta'm (colors column repurposed) */}
       {renderDynamicCheckboxGroup(
-        isUz ? 'Rang' : 'Цвет',
+        isUz ? 'Ta\'m' : 'Вкус',
         dynamicOptions?.colors || [],
         'colors'
       )}
 
-      {/* 5. Fur Length - dynamic from DB */}
+      {/* Qadoq hajmi / yosh guruhi (fur_length column repurposed) */}
       {renderDynamicCheckboxGroup(
-        isUz ? 'Mo\'yna uzunligi' : 'Длина меха',
+        isUz ? 'Qadoq hajmi' : 'Размер упаковки',
         dynamicOptions?.furLengths || [],
         'furLengths'
       )}
 
-      {/* 6. Application - dynamic from DB */}
+      {/* Maxsus ehtiyoj (application column repurposed) */}
       {renderDynamicCheckboxGroup(
-        isUz ? 'Qo\'llanish sohasi' : 'Область применения',
+        isUz ? 'Maxsus ehtiyoj' : 'Особые потребности',
         dynamicOptions?.applications || [],
         'applications'
       )}
@@ -267,7 +267,7 @@ export function CatalogFilterSidebar({ categories, onApply, initialFilters, dyna
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-sm text-foreground">
-              {isUz ? 'Sotuvda bor' : 'В наличии'}
+              {isUz ? 'Omborda mavjud' : 'В наличии'}
             </span>
             <Switch
               checked={filters.inStock}

@@ -51,31 +51,31 @@ export default function Index() {
   const contactPhone = settings?.contact_phone || '+998 90 123 45 67';
 
   const whyUsItems = [
-    { key: 'whyus_1', icon: 'Shield', titleFallback: '5 yil kafolat', descFallback: 'Barcha mahsulotlarga 5 yillik kafolat' },
-    { key: 'whyus_2', icon: 'Paintbrush', titleFallback: 'Individual dizayn', descFallback: 'Sizning didingizga mos dizayn' },
-    { key: 'whyus_3', icon: 'Ruler', titleFallback: "O'lchov asosida", descFallback: "Aniq o'lchovlar bo'yicha ishlab chiqarish" },
-    { key: 'whyus_4', icon: 'Users', titleFallback: 'Tajribali ustalar', descFallback: '10+ yillik tajribaga ega mutaxassislar' },
-    { key: 'whyus_5', icon: 'Gem', titleFallback: 'Premium materiallar', descFallback: 'Faqat yuqori sifatli materiallar' },
-    { key: 'whyus_6', icon: 'Truck', titleFallback: 'Tez yetkazib berish', descFallback: "Toshkent bo'ylab bepul yetkazib berish" },
+    { key: 'whyus_1', icon: 'Shield', titleFallback: 'Original mahsulot', descFallback: 'Faqat rasmiy distribyutorlardan: Royal Canin, Pro Plan, Hill\'s' },
+    { key: 'whyus_2', icon: 'Truck', titleFallback: 'Tez yetkazib berish', descFallback: 'Toshkent bo\'ylab 1-2 kun, viloyatlarga 2-4 kun' },
+    { key: 'whyus_3', icon: 'Users', titleFallback: 'Veterinar tavsiyasi', descFallback: 'Hayvoningiz uchun mos ozuqa tanlashga yordam beramiz' },
+    { key: 'whyus_4', icon: 'Gem', titleFallback: 'Premium brendlar', descFallback: 'Acana, Orijen, Farmina, Monge — super premium liniya' },
+    { key: 'whyus_5', icon: 'Paintbrush', titleFallback: 'Maxsus liniyalar', descFallback: 'Sterilized, Sensitive, Urinary, Hypoallergenic' },
+    { key: 'whyus_6', icon: 'Ruler', titleFallback: 'Qulay qadoq', descFallback: '400g dan 15kg gacha — kichik va katta qadoqlar' },
   ];
 
   const steps = [
-    { key: 'step_1', num: '01', titleFallback: "O'lchov olish", descFallback: "Ustamiz siznikiga kelib bepul o'lchov oladi" },
-    { key: 'step_2', num: '02', titleFallback: 'Dizayn yaratish', descFallback: '3D dizayn tayyorlab, sizga taqdim etamiz' },
-    { key: 'step_3', num: '03', titleFallback: 'Ishlab chiqarish', descFallback: 'Premium materiallarda tayyor qilamiz' },
-    { key: 'step_4', num: '04', titleFallback: "O'rnatish", descFallback: "Professional o'rnatish va sozlash" },
+    { key: 'step_1', num: '01', titleFallback: 'Ozuqani tanlang', descFallback: 'Katalogda hayvon turi, brend va yoshga qarab tanlang' },
+    { key: 'step_2', num: '02', titleFallback: 'Savatga qo\'shing', descFallback: 'Qadoq hajmi va miqdorni tanlang' },
+    { key: 'step_3', num: '03', titleFallback: 'Buyurtma bering', descFallback: 'Telefon, manzil va yetkazib berish turini kiriting' },
+    { key: 'step_4', num: '04', titleFallback: 'Qabul qiling', descFallback: 'Kuryer 1-2 kun ichida eshigingizgacha keltiradi' },
   ];
 
   const testimonials = [
-    { key: 'testimonial_1', nameFallback: 'Sardor Karimov', textFallback: "BAROKAT MEBEL bilan ishlaganim uchun juda mamnunman. Sifat a'lo darajada, dizayn zamonaviy.", roleFallback: 'Mijoz' },
-    { key: 'testimonial_2', nameFallback: 'Nilufar Rahimova', textFallback: "Oshxona mebelini buyurtma qildik, natija kutganimizdan ham yaxshi chiqdi. Rahmat!", roleFallback: 'Mijoz' },
-    { key: 'testimonial_3', nameFallback: 'Bobur Toshmatov', textFallback: "TV zona va shkaf buyurtma qildim. Professional yondashuv va sifatli ish.", roleFallback: 'Mijoz' },
+    { key: 'testimonial_1', nameFallback: 'Sardor Karimov', textFallback: 'Itimga Royal Canin Junior buyurtma qildim — bir kunda yetkazib berishdi. Original mahsulot, narxlar yaxshi.', roleFallback: 'It egasi' },
+    { key: 'testimonial_2', nameFallback: 'Nilufar Rahimova', textFallback: 'Mushugim sterilizatsiya qilingan, menejer Sterilised liniyani tavsiya qildi. Mushugim juda yaxshi yeyapti.', roleFallback: 'Mushuk egasi' },
+    { key: 'testimonial_3', nameFallback: 'Bobur Toshmatov', textFallback: 'Pro Plan har oy avtomatik yetkazib berishini sozladim — juda qulay.', roleFallback: 'Doimiy mijoz' },
   ];
 
   const trustBadges = [
-    { key: 'trust_1', icon: Paintbrush, fallback: 'Individual dizayn' },
-    { key: 'trust_2', icon: Ruler, fallback: "Bepul o'lchov" },
-    { key: 'trust_3', icon: Gem, fallback: 'Premium materiallar' },
+    { key: 'trust_1', icon: Gem, fallback: 'Premium brendlar' },
+    { key: 'trust_2', icon: Users, fallback: 'Veterinar tavsiya' },
+    { key: 'trust_3', icon: Shield, fallback: 'Original mahsulot' },
     { key: 'trust_4', icon: Truck, fallback: 'Tez yetkazib berish' },
   ];
 
@@ -107,7 +107,7 @@ export default function Index() {
             <div className="inline-block mb-6 px-4 py-1.5 border border-primary/40 rounded-sm">
               <EditableText
                 contentKey="hero_badge"
-                fallback="Premium mebel"
+                fallback={language === 'ru' ? 'PETFOOD MARKET' : 'PETFOOD MARKET'}
                 as="span"
                 className="text-primary text-xs font-medium tracking-[0.3em] uppercase"
                 section="hero"
@@ -116,7 +116,7 @@ export default function Index() {
             <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6">
               <EditableText
                 contentKey="hero_title"
-                fallback="Premium Mebel Dizayni"
+                fallback={language === 'ru' ? 'Качественные корма для собак и кошек' : "It va mushuklar uchun sifatli ozuqalar"}
                 as="span"
                 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold"
                 section="hero"
@@ -125,7 +125,7 @@ export default function Index() {
             <p className="text-lg md:text-xl text-white/70 mb-10 max-w-lg leading-relaxed">
               <EditableText
                 contentKey="hero_subtitle"
-                fallback="Zamonaviy, sifatli va individual buyurtma asosida ishlab chiqariladi"
+                fallback={language === 'ru' ? "Royal Canin, Pro Plan, Hill's и другие премиум бренды. Быстрая доставка по Ташкенту." : "Royal Canin, Pro Plan, Hill's va boshqa premium brendlar. Toshkent bo'ylab tez yetkazib berish."}
                 as="span"
                 className="text-lg md:text-xl"
                 section="hero"
@@ -133,13 +133,13 @@ export default function Index() {
             </p>
             <div className="flex flex-wrap gap-4 mb-16">
               <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-sm px-8 tracking-wider text-sm uppercase h-14">
-                <Link to="/contact">
-                  <EditableText contentKey="hero_cta_primary" fallback={language === 'ru' ? 'Оформить заказ' : "Buyurtma berish"} as="span" section="hero" />
+                <Link to="/catalog">
+                  <EditableText contentKey="hero_cta_primary" fallback={language === 'ru' ? 'Смотреть каталог' : "Katalogni ko'rish"} as="span" section="hero" />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="border-white/30 bg-transparent text-white hover:bg-transparent hover:text-white hover:border-white/30 rounded-sm px-8 tracking-wider text-sm uppercase h-14 transition-none">
-                <Link to="/about">
-                  <EditableText contentKey="hero_cta_secondary" fallback={language === 'ru' ? 'Посмотреть портфолио' : "Portfolio ko'rish"} as="span" section="hero" />
+                <Link to="/catalog?pet=cat">
+                  <EditableText contentKey="hero_cta_secondary" fallback={language === 'ru' ? 'Для кошек' : "Mushuklar uchun"} as="span" section="hero" />
                 </Link>
               </Button>
             </div>
@@ -170,9 +170,9 @@ export default function Index() {
       <section ref={sectionWhyUs.ref} className="py-20 md:py-28 bg-secondary">
         <div className="container mx-auto px-4 lg:px-8">
           <div className={`text-center mb-16 transition-all duration-700 ${sectionWhyUs.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <EditableText contentKey="whyus_label" fallback="Afzalliklar" as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="whyus" />
+            <EditableText contentKey="whyus_label" fallback={language === 'ru' ? 'Преимущества' : 'Afzalliklar'} as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="whyus" />
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4">
-              <EditableText contentKey="whyus_title" fallback="Nega aynan biz" as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="whyus" />
+              <EditableText contentKey="whyus_title" fallback={language === 'ru' ? 'Почему выбирают нас' : 'Nega aynan biz'} as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="whyus" />
             </h2>
           </div>
 
@@ -208,9 +208,9 @@ export default function Index() {
       <section ref={sectionProcess.ref} className="py-20 md:py-28 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
           <div className={`text-center mb-16 transition-all duration-700 ${sectionProcess.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <EditableText contentKey="process_label" fallback="Jarayon" as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="process" />
+            <EditableText contentKey="process_label" fallback={language === 'ru' ? 'Процесс' : 'Jarayon'} as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="process" />
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4">
-              <EditableText contentKey="process_title" fallback="Qanday ishlaymiz" as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="process" />
+              <EditableText contentKey="process_title" fallback={language === 'ru' ? 'Как заказать' : "Qanday buyurtma berish"} as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="process" />
             </h2>
           </div>
 
@@ -241,9 +241,9 @@ export default function Index() {
       <section ref={sectionServices.ref} className="py-20 md:py-28 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
           <div className={`text-center mb-16 transition-all duration-700 ${sectionServices.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <EditableText contentKey="services_label" fallback="Xizmatlar" as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="services" />
+            <EditableText contentKey="services_label" fallback={language === 'ru' ? 'Категории' : 'Toifalar'} as="span" className="text-primary text-xs tracking-[0.3em] uppercase font-medium" section="services" />
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4">
-              <EditableText contentKey="services_title" fallback="Biz nimalar qilamiz" as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="services" />
+              <EditableText contentKey="services_title" fallback={language === 'ru' ? 'Что мы предлагаем' : 'Nimani taklif qilamiz'} as="span" className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold" section="services" />
             </h2>
           </div>
 

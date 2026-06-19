@@ -13,6 +13,12 @@ interface TelegramRequest {
     customer_phone: string;
     customer_message?: string;
     total_price: number;
+    pet_type?: string;
+    delivery_address?: string;
+    delivery_city?: string;
+    delivery_type?: string;
+    payment_type?: string;
+    recurrence?: string;
     items: Array<{
       product_name: string;
       quantity: number;
@@ -20,6 +26,7 @@ interface TelegramRequest {
       selected_options?: {
         size?: string;
         color?: string;
+        package_size?: string;
       };
     }>;
   };
@@ -72,33 +79,39 @@ async function sendTelegramMessage(botToken: string, chatId: string, message: st
 function formatOrderMessage(orderData: TelegramRequest['order_data']) {
   if (!orderData) return '';
 
+  const petTypeLabel: Record<string, string> = { dog: '🐕 It', cat: '🐈 Mushuk', both: '🐕🐈 Ikkalasi' };
+  const deliveryLabel: Record<string, string> = { courier: '🚚 Kuryer', pickup: '🏪 Olib ketish' };
+  const paymentLabel: Record<string, string> = { cash: '💵 Naqd', card: '💳 Karta', negotiable: '🤝 Kelishilgan' };
+  const recurrenceLabel: Record<string, string> = { once: 'Bir martalik', biweekly: 'Har 2 hafta', monthly: 'Har oy' };
+
   const itemsList = orderData.items.map(item => {
     let line = `• ${item.product_name} x${item.quantity}`;
-    if (item.selected_options?.size || item.selected_options?.color) {
-      const options = [];
-      if (item.selected_options.size) options.push(`O'lcham: ${item.selected_options.size}`);
-      if (item.selected_options.color) options.push(`Rang: ${item.selected_options.color}`);
-      line += ` (${options.join(', ')})`;
-    }
-    line += ` - ${new Intl.NumberFormat('uz-UZ').format(item.price * item.quantity)} so'm`;
+    const opts: string[] = [];
+    if (item.selected_options?.package_size) opts.push(`Qadoq: ${item.selected_options.package_size}`);
+    if (item.selected_options?.size) opts.push(`O'lcham: ${item.selected_options.size}`);
+    if (item.selected_options?.color) opts.push(`Ta'm/Rang: ${item.selected_options.color}`);
+    if (opts.length) line += ` (${opts.join(', ')})`;
+    line += ` — ${new Intl.NumberFormat('uz-UZ').format(item.price * item.quantity)} so'm`;
     return line;
   }).join('\n');
 
-  const message = `
-🛒 *Yangi buyurtma!*
+  const lines = [
+    '🐾 *Yangi buyurtma — PETFOOD MARKET*',
+    '',
+    `📋 *Buyurtma:* ${orderData.order_number}`,
+    `👤 *Mijoz:* ${orderData.customer_name}`,
+    `📞 *Telefon:* ${orderData.customer_phone}`,
+  ];
+  if (orderData.pet_type) lines.push(`🐕 *Hayvon:* ${petTypeLabel[orderData.pet_type] || orderData.pet_type}`);
+  if (orderData.delivery_city) lines.push(`📍 *Shahar/Hudud:* ${orderData.delivery_city}`);
+  if (orderData.delivery_address) lines.push(`🏠 *Manzil:* ${orderData.delivery_address}`);
+  if (orderData.delivery_type) lines.push(`🚚 *Yetkazib berish:* ${deliveryLabel[orderData.delivery_type] || orderData.delivery_type}`);
+  if (orderData.payment_type) lines.push(`💳 *To'lov:* ${paymentLabel[orderData.payment_type] || orderData.payment_type}`);
+  if (orderData.recurrence && orderData.recurrence !== 'once') lines.push(`🔁 *Takror:* ${recurrenceLabel[orderData.recurrence] || orderData.recurrence}`);
+  lines.push('', '*Mahsulotlar:*', itemsList, '', `💰 *Jami:* ${new Intl.NumberFormat('uz-UZ').format(orderData.total_price)} so'm`);
+  if (orderData.customer_message) lines.push('', `💬 *Izoh:* ${orderData.customer_message}`);
 
-📋 *Buyurtma:* ${orderData.order_number}
-👤 *Mijoz:* ${orderData.customer_name}
-📞 *Telefon:* ${orderData.customer_phone}
-
-*Mahsulotlar:*
-${itemsList}
-
-💰 *Jami:* ${new Intl.NumberFormat('uz-UZ').format(orderData.total_price)} so'm
-${orderData.customer_message ? `\n💬 *Xabar:* ${orderData.customer_message}` : ''}
-  `.trim();
-
-  return message;
+  return lines.join('\n');
 }
 
 Deno.serve(async (req) => {
@@ -162,7 +175,7 @@ Deno.serve(async (req) => {
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      message = '✅ *Test xabar*\n\nMebel do\'koni admin paneli bilan aloqa muvaffaqiyatli o\'rnatildi!\n\nBuyurtmalar haqida xabarlar shu chatga keladi.';
+      message = '✅ *Test xabar*\n\n🐾 PETFOOD MARKET admin paneli bilan aloqa muvaffaqiyatli o\'rnatildi!\n\nBuyurtmalar haqida xabarlar shu chatga keladi.';
     } else if (body.type === 'order') {
       if (!body.order_data) {
         return new Response(

@@ -38,6 +38,11 @@ export function ProductCard({ product }: ProductCardProps) {
     ? `/product/${product.slug}` 
     : `/product/${product.id}`;
 
+  const inStock = ('in_stock' in product ? product.in_stock : true) !== false;
+  const stockQty = (product as any).stock_quantity;
+  const vetRecommended = (product as any).vet_recommended === true;
+  const packageSize = (product as any).package_size;
+
   return (
     <div className="group bg-card rounded-2xl overflow-hidden shadow-warm hover:shadow-warm-lg transition-all duration-300">
       <Link to={productUrl} className="block relative aspect-[4/3] overflow-hidden">
@@ -51,6 +56,16 @@ export function ProductCard({ product }: ProductCardProps) {
         {originalPrice && originalPrice > price && (
           <span className="absolute top-3 left-3 bg-accent text-accent-foreground text-xs font-medium px-2 py-1 rounded-full">
             -{Math.round((1 - price / originalPrice) * 100)}%
+          </span>
+        )}
+        {!inStock && (
+          <span className="absolute inset-0 flex items-center justify-center bg-black/60 text-white text-sm font-semibold uppercase tracking-wider">
+            {language === 'ru' ? 'Нет в наличии' : 'Tugagan'}
+          </span>
+        )}
+        {vetRecommended && (
+          <span className="absolute top-3 right-3 bg-emerald-600 text-white text-[10px] font-medium px-2 py-1 rounded-full">
+            🩺 Vet
           </span>
         )}
       </Link>
@@ -72,6 +87,9 @@ export function ProductCard({ product }: ProductCardProps) {
                   {formatPrice(originalPrice)}
                 </span>
               )}
+              {packageSize && (
+                <div className="text-[11px] text-muted-foreground mt-0.5">{packageSize}</div>
+              )}
             </div>
           )}
           {!price && <div />}
@@ -79,10 +97,11 @@ export function ProductCard({ product }: ProductCardProps) {
             size="sm"
             variant={inCart ? "secondary" : "default"}
             className="rounded-full"
+            disabled={!inStock}
             onClick={(e) => {
               e.preventDefault();
+              if (!inStock) return;
               if (!inCart) {
-                // Create a cart-compatible product object
                 const cartProduct = {
                   id: product.id,
                   name_uz: product.name_uz,
