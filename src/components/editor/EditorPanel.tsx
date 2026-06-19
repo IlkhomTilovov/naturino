@@ -107,27 +107,27 @@ export function EditorPanel() {
         return;
       }
 
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${selectedElement.contentKey}-${Date.now()}.${fileExt}`;
-      const filePath = `site-content/${fileName}`;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('bucket', 'product-images');
+      formData.append('contentKey', selectedElement.contentKey);
 
       console.info('[image-upload] starting', {
         contentKey: selectedElement.contentKey,
-        filePath,
         size: file.size,
         type: file.type,
         userId: session.user.id,
       });
 
-      const { error: uploadError } = await supabase.storage
-        .from('product-images')
-        .upload(filePath, file, { upsert: true });
+      const { data: uploadData, error: uploadError } = await supabase.functions.invoke('upload-site-image', {
+        body: formData,
+      });
 
       if (uploadError) throw uploadError;
+      if (uploadData?.error) throw new Error(uploadData.error);
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(filePath);
+      const publicUrl = uploadData?.publicUrl;
+      if (!publicUrl) throw new Error('Yuklangan rasm manzili qaytmadi');
 
       // Save URL to site_content for both languages (images are language-independent)
       await updateContent(selectedElement.contentKey, 'uz', publicUrl);
