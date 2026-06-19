@@ -184,15 +184,26 @@ export type Database = {
       }
       brands: {
         Row: {
+          advantages_ru: Json | null
+          advantages_uz: Json | null
           banner: string | null
+          country: string | null
           created_at: string
           description_ru: string | null
           description_uz: string | null
+          for_whom_ru: string | null
+          for_whom_uz: string | null
+          founded_year: number | null
+          history_ru: string | null
+          history_uz: string | null
           id: string
           is_active: boolean
           is_followed: boolean
           is_indexed: boolean
+          key_ingredients_ru: string | null
+          key_ingredients_uz: string | null
           logo: string | null
+          manufacturer: string | null
           meta_description_ru: string | null
           meta_description_uz: string | null
           meta_keywords: string | null
@@ -200,21 +211,37 @@ export type Database = {
           meta_title_uz: string | null
           name_ru: string
           name_uz: string
+          naturino_note_ru: string | null
+          naturino_note_uz: string | null
+          segment: string | null
           slug: string
           sort_order: number
           updated_at: string
+          vet_recommendation_ru: string | null
+          vet_recommendation_uz: string | null
           website: string | null
         }
         Insert: {
+          advantages_ru?: Json | null
+          advantages_uz?: Json | null
           banner?: string | null
+          country?: string | null
           created_at?: string
           description_ru?: string | null
           description_uz?: string | null
+          for_whom_ru?: string | null
+          for_whom_uz?: string | null
+          founded_year?: number | null
+          history_ru?: string | null
+          history_uz?: string | null
           id?: string
           is_active?: boolean
           is_followed?: boolean
           is_indexed?: boolean
+          key_ingredients_ru?: string | null
+          key_ingredients_uz?: string | null
           logo?: string | null
+          manufacturer?: string | null
           meta_description_ru?: string | null
           meta_description_uz?: string | null
           meta_keywords?: string | null
@@ -222,21 +249,37 @@ export type Database = {
           meta_title_uz?: string | null
           name_ru: string
           name_uz: string
+          naturino_note_ru?: string | null
+          naturino_note_uz?: string | null
+          segment?: string | null
           slug: string
           sort_order?: number
           updated_at?: string
+          vet_recommendation_ru?: string | null
+          vet_recommendation_uz?: string | null
           website?: string | null
         }
         Update: {
+          advantages_ru?: Json | null
+          advantages_uz?: Json | null
           banner?: string | null
+          country?: string | null
           created_at?: string
           description_ru?: string | null
           description_uz?: string | null
+          for_whom_ru?: string | null
+          for_whom_uz?: string | null
+          founded_year?: number | null
+          history_ru?: string | null
+          history_uz?: string | null
           id?: string
           is_active?: boolean
           is_followed?: boolean
           is_indexed?: boolean
+          key_ingredients_ru?: string | null
+          key_ingredients_uz?: string | null
           logo?: string | null
+          manufacturer?: string | null
           meta_description_ru?: string | null
           meta_description_uz?: string | null
           meta_keywords?: string | null
@@ -244,9 +287,14 @@ export type Database = {
           meta_title_uz?: string | null
           name_ru?: string
           name_uz?: string
+          naturino_note_ru?: string | null
+          naturino_note_uz?: string | null
+          segment?: string | null
           slug?: string
           sort_order?: number
           updated_at?: string
+          vet_recommendation_ru?: string | null
+          vet_recommendation_uz?: string | null
           website?: string | null
         }
         Relationships: []
@@ -660,6 +708,104 @@ export type Database = {
           },
         ]
       }
+      product_lines: {
+        Row: {
+          advantages_ru: Json | null
+          advantages_uz: Json | null
+          banner: string | null
+          brand_id: string | null
+          composition_ru: string | null
+          composition_uz: string | null
+          contraindications_ru: string | null
+          contraindications_uz: string | null
+          created_at: string
+          for_whom_ru: string | null
+          for_whom_uz: string | null
+          id: string
+          is_active: boolean
+          meta_description_ru: string | null
+          meta_description_uz: string | null
+          meta_title_ru: string | null
+          meta_title_uz: string | null
+          name_ru: string
+          name_uz: string
+          problem_solved_ru: string | null
+          problem_solved_uz: string | null
+          recommended_age: string | null
+          slug: string
+          sort_order: number
+          tagline_ru: string | null
+          tagline_uz: string | null
+          updated_at: string
+        }
+        Insert: {
+          advantages_ru?: Json | null
+          advantages_uz?: Json | null
+          banner?: string | null
+          brand_id?: string | null
+          composition_ru?: string | null
+          composition_uz?: string | null
+          contraindications_ru?: string | null
+          contraindications_uz?: string | null
+          created_at?: string
+          for_whom_ru?: string | null
+          for_whom_uz?: string | null
+          id?: string
+          is_active?: boolean
+          meta_description_ru?: string | null
+          meta_description_uz?: string | null
+          meta_title_ru?: string | null
+          meta_title_uz?: string | null
+          name_ru: string
+          name_uz: string
+          problem_solved_ru?: string | null
+          problem_solved_uz?: string | null
+          recommended_age?: string | null
+          slug: string
+          sort_order?: number
+          tagline_ru?: string | null
+          tagline_uz?: string | null
+          updated_at?: string
+        }
+        Update: {
+          advantages_ru?: Json | null
+          advantages_uz?: Json | null
+          banner?: string | null
+          brand_id?: string | null
+          composition_ru?: string | null
+          composition_uz?: string | null
+          contraindications_ru?: string | null
+          contraindications_uz?: string | null
+          created_at?: string
+          for_whom_ru?: string | null
+          for_whom_uz?: string | null
+          id?: string
+          is_active?: boolean
+          meta_description_ru?: string | null
+          meta_description_uz?: string | null
+          meta_title_ru?: string | null
+          meta_title_uz?: string | null
+          name_ru?: string
+          name_uz?: string
+          problem_solved_ru?: string | null
+          problem_solved_uz?: string | null
+          recommended_age?: string | null
+          slug?: string
+          sort_order?: number
+          tagline_ru?: string | null
+          tagline_uz?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_lines_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           application: string[] | null
@@ -696,6 +842,7 @@ export type Database = {
           package_size: string | null
           pet_type: string | null
           price: number | null
+          product_line_id: string | null
           sizes: string[] | null
           slug: string | null
           sort_order: number | null
@@ -741,6 +888,7 @@ export type Database = {
           package_size?: string | null
           pet_type?: string | null
           price?: number | null
+          product_line_id?: string | null
           sizes?: string[] | null
           slug?: string | null
           sort_order?: number | null
@@ -786,6 +934,7 @@ export type Database = {
           package_size?: string | null
           pet_type?: string | null
           price?: number | null
+          product_line_id?: string | null
           sizes?: string[] | null
           slug?: string | null
           sort_order?: number | null
@@ -809,6 +958,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_product_line_id_fkey"
+            columns: ["product_line_id"]
+            isOneToOne: false
+            referencedRelation: "product_lines"
             referencedColumns: ["id"]
           },
         ]
