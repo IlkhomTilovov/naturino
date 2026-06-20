@@ -1,4 +1,7 @@
-export type Language = 'uz' | 'ru';
+// Language is dynamic — any active language code from the `languages` table.
+// Built-in dictionaries below cover 'uz' and 'ru'; custom languages fall back
+// to the default language's dictionary until Stage 2 brings DB translations.
+export type Language = string;
 
 export const translations = {
   uz: {
