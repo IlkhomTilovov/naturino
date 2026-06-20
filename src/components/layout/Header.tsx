@@ -151,13 +151,6 @@ export function Header() {
               )}
             </button>
 
-            {/* CTA */}
-            <Button
-              asChild
-              className="hidden md:inline-flex bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-10 px-5 text-[11px] tracking-[0.22em] uppercase font-medium ml-1"
-            >
-              <Link to="/contact">{language === 'ru' ? 'Заказать' : 'Buyurtma'}</Link>
-            </Button>
 
             {/* Mobile menu */}
             <button
