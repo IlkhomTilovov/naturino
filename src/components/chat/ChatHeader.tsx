@@ -24,7 +24,7 @@ export function ChatHeader({
       style={{ backgroundColor: CHAT_CONFIG.BRAND_COLOR }}
     >
       <div className="h-9 w-9 rounded-full bg-white/15 flex items-center justify-center font-bold text-sm">
-        TK
+        🐾
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-sm font-semibold truncate">{title}</div>
