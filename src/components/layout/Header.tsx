@@ -251,6 +251,8 @@ export function Header() {
           </Button>
         </nav>
       </div>
+      </div>
+
 
       {createPortal(
         <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />,
