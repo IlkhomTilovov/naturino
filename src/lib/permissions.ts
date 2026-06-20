@@ -23,63 +23,95 @@ export interface RolePermissions {
   telegram: Permission;
   systemSettings: Permission;
   analytics: Permission;
+  // CMS
+  cms_homepage: Permission;
+  cms_pages: Permission;
+  cms_blog: Permission;
+  cms_faq: Permission;
+  // Marketing
+  marketing_seo: Permission;
+  marketing_banners: Permission;
+  // Settings sub-modules
+  settings_languages: Permission;
+  settings_checkout: Permission;
 }
 
-// Define permissions for each role
+const noPerm: Permission = { view: false, create: false, edit: false, delete: false };
+const fullPerm: Permission = { view: true, create: true, edit: true, delete: true };
+const readPerm: Permission = { view: true, create: false, edit: false, delete: false };
+
 export const rolePermissions: Record<AppRole, RolePermissions> = {
-  // SELLER: Orders and customers only
   seller: {
-    dashboard: { view: true, create: false, edit: false, delete: false },
+    dashboard: readPerm,
     orders: { view: true, create: true, edit: true, delete: false },
-    categories: { view: false, create: false, edit: false, delete: false },
-    brands: { view: false, create: false, edit: false, delete: false },
-    attributes: { view: false, create: false, edit: false, delete: false },
-    products: { view: false, create: false, edit: false, delete: false },
-    customers: { view: true, create: false, edit: false, delete: false },
-    siteContent: { view: false, create: false, edit: false, delete: false },
-    themes: { view: false, create: false, edit: false, delete: false },
-    admins: { view: false, create: false, edit: false, delete: false },
-    telegram: { view: false, create: false, edit: false, delete: false },
-    systemSettings: { view: false, create: false, edit: false, delete: false },
-    analytics: { view: false, create: false, edit: false, delete: false },
+    categories: noPerm,
+    brands: noPerm,
+    attributes: noPerm,
+    products: noPerm,
+    customers: readPerm,
+    siteContent: noPerm,
+    themes: noPerm,
+    admins: noPerm,
+    telegram: noPerm,
+    systemSettings: noPerm,
+    analytics: noPerm,
+    cms_homepage: noPerm,
+    cms_pages: noPerm,
+    cms_blog: noPerm,
+    cms_faq: noPerm,
+    marketing_seo: noPerm,
+    marketing_banners: noPerm,
+    settings_languages: noPerm,
+    settings_checkout: noPerm,
   },
-  
-  // MANAGER: Categories, products, content, telegram
   manager: {
-    dashboard: { view: true, create: false, edit: false, delete: false },
-    orders: { view: false, create: false, edit: false, delete: false },
-    categories: { view: true, create: true, edit: true, delete: true },
-    brands: { view: true, create: true, edit: true, delete: true },
-    attributes: { view: true, create: true, edit: true, delete: true },
-    products: { view: true, create: true, edit: true, delete: true },
-    customers: { view: false, create: false, edit: false, delete: false },
-    siteContent: { view: true, create: true, edit: true, delete: true },
-    themes: { view: true, create: true, edit: true, delete: true },
-    admins: { view: false, create: false, edit: false, delete: false },
-    telegram: { view: true, create: true, edit: true, delete: true },
-    systemSettings: { view: false, create: false, edit: false, delete: false },
-    analytics: { view: false, create: false, edit: false, delete: false },
+    dashboard: readPerm,
+    orders: noPerm,
+    categories: fullPerm,
+    brands: fullPerm,
+    attributes: fullPerm,
+    products: fullPerm,
+    customers: noPerm,
+    siteContent: fullPerm,
+    themes: fullPerm,
+    admins: noPerm,
+    telegram: fullPerm,
+    systemSettings: noPerm,
+    analytics: noPerm,
+    cms_homepage: fullPerm,
+    cms_pages: fullPerm,
+    cms_blog: fullPerm,
+    cms_faq: fullPerm,
+    marketing_seo: fullPerm,
+    marketing_banners: fullPerm,
+    settings_languages: readPerm,
+    settings_checkout: fullPerm,
   },
-  
-  // ADMIN: Full access
   admin: {
-    dashboard: { view: true, create: true, edit: true, delete: true },
-    orders: { view: true, create: true, edit: true, delete: true },
-    categories: { view: true, create: true, edit: true, delete: true },
-    brands: { view: true, create: true, edit: true, delete: true },
-    attributes: { view: true, create: true, edit: true, delete: true },
-    products: { view: true, create: true, edit: true, delete: true },
-    customers: { view: true, create: true, edit: true, delete: true },
-    siteContent: { view: true, create: true, edit: true, delete: true },
-    themes: { view: true, create: true, edit: true, delete: true },
-    admins: { view: true, create: true, edit: true, delete: true },
-    telegram: { view: true, create: true, edit: true, delete: true },
-    systemSettings: { view: true, create: true, edit: true, delete: true },
-    analytics: { view: true, create: true, edit: true, delete: true },
+    dashboard: fullPerm,
+    orders: fullPerm,
+    categories: fullPerm,
+    brands: fullPerm,
+    attributes: fullPerm,
+    products: fullPerm,
+    customers: fullPerm,
+    siteContent: fullPerm,
+    themes: fullPerm,
+    admins: fullPerm,
+    telegram: fullPerm,
+    systemSettings: fullPerm,
+    analytics: fullPerm,
+    cms_homepage: fullPerm,
+    cms_pages: fullPerm,
+    cms_blog: fullPerm,
+    cms_faq: fullPerm,
+    marketing_seo: fullPerm,
+    marketing_banners: fullPerm,
+    settings_languages: fullPerm,
+    settings_checkout: fullPerm,
   },
 };
 
-// Helper functions
 export function hasPermission(
   role: AppRole | null,
   module: keyof RolePermissions,
@@ -93,7 +125,6 @@ export function canViewModule(role: AppRole | null, module: keyof RolePermission
   return hasPermission(role, module, 'view');
 }
 
-// Get role display info
 export const roleDisplayInfo: Record<AppRole, { label: string; description: string; color: string }> = {
   seller: {
     label: 'Sotuvchi',
@@ -112,7 +143,6 @@ export const roleDisplayInfo: Record<AppRole, { label: string; description: stri
   },
 };
 
-// Navigation items with required permissions
 export interface NavItemConfig {
   title: string;
   url: string;
