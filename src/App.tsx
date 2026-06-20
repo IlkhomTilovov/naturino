@@ -58,6 +58,8 @@ import Themes from "./pages/admin/Themes";
 import CheckoutFormSettings from "./pages/admin/CheckoutFormSettings";
 import AdminAnalytics from "./pages/admin/Analytics";
 import ComingSoon from "./pages/admin/ComingSoon";
+import CmsPages from "./pages/admin/CmsPages";
+import CmsPageEdit from "./pages/admin/CmsPageEdit";
 
 const queryClient = new QueryClient();
 
@@ -173,7 +175,12 @@ const App = () => (
                           } />
                           <Route path="cms/pages" element={
                             <ProtectedRoute module="cms_pages">
-                              <ComingSoon title="Sahifalar CMS" description="Page builder bilan statik sahifalarni boshqarish — Bosqich 2 da qo'shiladi." />
+                              <CmsPages />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="cms/pages/:id" element={
+                            <ProtectedRoute module="cms_pages">
+                              <CmsPageEdit />
                             </ProtectedRoute>
                           } />
                           <Route path="cms/blog" element={
