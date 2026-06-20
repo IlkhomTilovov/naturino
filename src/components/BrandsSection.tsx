@@ -134,7 +134,7 @@ export const BrandsSection = memo(function BrandsSection() {
 interface BrandCardProps {
   brand: any;
   count: number;
-  language: 'uz' | 'ru';
+  language: string;
   index: number;
   isVisible: boolean;
 }

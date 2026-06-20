@@ -13,7 +13,7 @@ export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, availableLanguages } = useLanguage();
   const { totalItems } = useCart();
   const location = useLocation();
   const { settings } = useSystemSettings();
@@ -114,28 +114,26 @@ export function Header() {
               <Search className="w-[18px] h-[18px]" />
             </Link>
 
-            {/* Language toggle */}
-            <div className="hidden sm:flex items-center text-[11px] font-medium tracking-[0.15em]">
-              <button
-                onClick={() => setLanguage('uz')}
-                className={cn(
-                  'px-2 py-1 transition-colors',
-                  language === 'uz' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                UZ
-              </button>
-              <span className="text-border">/</span>
-              <button
-                onClick={() => setLanguage('ru')}
-                className={cn(
-                  'px-2 py-1 transition-colors',
-                  language === 'ru' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                RU
-              </button>
-            </div>
+            {/* Language toggle — dynamic */}
+            {availableLanguages.length > 1 && (
+              <div className="hidden sm:flex items-center text-[11px] font-medium tracking-[0.15em]">
+                {availableLanguages.map((lang, idx) => (
+                  <span key={lang.code} className="flex items-center">
+                    {idx > 0 && <span className="text-border">/</span>}
+                    <button
+                      onClick={() => setLanguage(lang.code)}
+                      title={lang.native_name}
+                      className={cn(
+                        'px-2 py-1 transition-colors uppercase',
+                        language === lang.code ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+                      )}
+                    >
+                      {lang.code}
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
 
             {/* Cart */}
             <button
@@ -211,30 +209,24 @@ export function Header() {
             </div>
           </div>
 
-          <div className="mt-6 flex items-center gap-2">
-            <button
-              onClick={() => setLanguage('uz')}
-              className={cn(
-                'flex-1 py-2 text-xs tracking-[0.2em] uppercase border',
-                language === 'uz'
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'border-border text-muted-foreground',
-              )}
-            >
-              O‘zbekcha
-            </button>
-            <button
-              onClick={() => setLanguage('ru')}
-              className={cn(
-                'flex-1 py-2 text-xs tracking-[0.2em] uppercase border',
-                language === 'ru'
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'border-border text-muted-foreground',
-              )}
-            >
-              Русский
-            </button>
-          </div>
+          {availableLanguages.length > 1 && (
+            <div className="mt-6 flex items-center gap-2 flex-wrap">
+              {availableLanguages.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => setLanguage(lang.code)}
+                  className={cn(
+                    'flex-1 min-w-[80px] py-2 text-xs tracking-[0.2em] uppercase border',
+                    language === lang.code
+                      ? 'bg-primary text-primary-foreground border-primary'
+                      : 'border-border text-muted-foreground',
+                  )}
+                >
+                  {lang.native_name}
+                </button>
+              ))}
+            </div>
+          )}
 
           <Button
             asChild

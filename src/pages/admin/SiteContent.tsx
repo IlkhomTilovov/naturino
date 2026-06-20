@@ -12,7 +12,7 @@ type DeviceSize = 'desktop' | 'tablet' | 'mobile';
 
 interface ContentUpdate {
   key: string;
-  language: 'uz' | 'ru';
+  language: string;
   value: string;
   timestamp: number;
 }
