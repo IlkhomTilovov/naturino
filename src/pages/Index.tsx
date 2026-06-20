@@ -1,24 +1,26 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Loader2, Leaf, ShieldCheck, Award, Microscope, HeartPulse, Dog, Cat, Stethoscope, Sparkles, Phone, Send, Plus, Minus } from 'lucide-react';
+import {
+  ArrowRight, ArrowUpRight, Download, ShieldCheck, Factory, Award, Layers,
+  Microscope, FileCheck2, PackageCheck, Truck, FlaskConical, Leaf, Beef, Fish,
+  Wheat, Drumstick, CheckCircle2, XCircle, MessageSquare, Phone, Mail, Send,
+  MapPin, Globe2, Boxes, ClipboardList, Sparkles, BadgeCheck
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ProductCard } from '@/components/ProductCard';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { useFeaturedProducts } from '@/hooks/useProducts';
-import { useLanguage } from '@/hooks/useLanguage';
 import { useSEO } from '@/hooks/useSEO';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { EditableText } from '@/components/EditableText';
 import { EditableImage } from '@/components/EditableImage';
-import { ShopByCategoriesSection } from '@/components/ShopByCategoriesSection';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import heroImg from '@/assets/naturino-hero.jpg';
+import factoryImg from '@/assets/naturino-vet.jpg';
 import ingredientsImg from '@/assets/naturino-ingredients.jpg';
-import vetImg from '@/assets/naturino-vet.jpg';
-import puppyImg from '@/assets/naturino-puppy.jpg';
-import catImg from '@/assets/naturino-cat.jpg';
-import productImg from '@/assets/naturino-product.jpg';
-import lifestyleImg from '@/assets/naturino-lifestyle.jpg';
+import dryDogImg from '@/assets/naturino-puppy.jpg';
+import wetDogImg from '@/assets/naturino-product.jpg';
+import dryCatImg from '@/assets/naturino-cat.jpg';
+import wetCatImg from '@/assets/naturino-lifestyle.jpg';
+import treatsImg from '@/assets/naturino-product.jpg';
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -31,275 +33,200 @@ function useInView(threshold = 0.15) {
   return { ref, isVisible: v };
 }
 
-const productLines = [
-  { key: 'line_sterilised', icon: Cat, titleFallback: 'Sterilised', descFallback: 'Sterilizatsiya qilingan mushuklar uchun balanslangan ozuqa', tagFallback: 'Mushuklar', image: catImg, slug: 'sterilized' },
-  { key: 'line_kitten', icon: Cat, titleFallback: 'Kitten', descFallback: 'Mushukchalarning sog\'lom o\'sishi uchun maxsus formula', tagFallback: 'Mushukchalar', image: catImg, slug: 'kitten' },
-  { key: 'line_puppy', icon: Dog, titleFallback: 'Puppy', descFallback: 'Kuchukchalar uchun energiya va rivojlanish uchun barcha zarur moddalar', tagFallback: 'Kuchukchalar', image: puppyImg, slug: 'puppy' },
-  { key: 'line_sensitive', icon: HeartPulse, titleFallback: 'Sensitive', descFallback: 'Sezgir oshqozon va terini parvarish qiluvchi gipoallergen liniya', tagFallback: 'Sezgir', image: lifestyleImg, slug: 'sensitive' },
-  { key: 'line_veterinary', icon: Stethoscope, titleFallback: 'Veterinary', descFallback: 'Veterinar nazoratidagi davolovchi va profilaktik dietalar', tagFallback: 'Veterinariya', image: vetImg, slug: 'veterinar-ozuqa' },
+const whyCards = [
+  { icon: ShieldCheck, title: 'Consistent Quality', desc: 'Every batch laboratory-tested with strict in-house QC and AAFCO-aligned formulation.' },
+  { icon: BadgeCheck, title: 'Certified Export', desc: 'HACCP, ISO 22000, GMP, veterinary and customs documentation included with every shipment.' },
+  { icon: Factory, title: 'Reliable Production', desc: '12 000+ tons annual capacity, predictable lead times and stable supply for long contracts.' },
+  { icon: Layers, title: 'Private Label Flexibility', desc: 'Your brand, your recipe, your packaging — full OEM/private-label development under one roof.' },
 ];
 
-const ingredients = [
-  { key: 'ing_1', titleFallback: 'Yangi go\'sht', descFallback: 'Tovuq va qo\'zichoq go\'shti — protein manbai #1' },
-  { key: 'ing_2', titleFallback: 'Atlantika qizil baliq', descFallback: 'Omega-3 va omega-6 yog\'lari teri va junni mustahkamlaydi' },
-  { key: 'ing_3', titleFallback: 'Jigarrang guruch', descFallback: 'Engil hazm bo\'ladigan murakkab uglevodlar' },
-  { key: 'ing_4', titleFallback: 'Shirin kartoshka', descFallback: 'Tabiiy klechatka va vitaminlar manbai' },
-  { key: 'ing_5', titleFallback: 'Yovvoyi mevalar', descFallback: 'Antioksidantlar bilan immunitetni mustahkamlash' },
-  { key: 'ing_6', titleFallback: 'Bibariya va o\'tlar', descFallback: 'Tabiiy konservant — sun\'iy qo\'shimchalarsiz' },
+const categories = [
+  { image: dryDogImg, tag: 'Dogs · Dry', title: 'Dry Dog Food', protein: '22–32%', packs: '1 / 3 / 10 / 20 kg', shelf: '18 months', moq: '5 tons' },
+  { image: wetDogImg, tag: 'Dogs · Wet', title: 'Wet Dog Food', protein: '8–12%', packs: '100 / 200 / 400 g', shelf: '24 months', moq: '3 tons' },
+  { image: dryCatImg, tag: 'Cats · Dry', title: 'Dry Cat Food', protein: '28–36%', packs: '0.4 / 1.5 / 5 / 10 kg', shelf: '18 months', moq: '5 tons' },
+  { image: wetCatImg, tag: 'Cats · Wet', title: 'Wet Cat Food', protein: '9–13%', packs: '85 / 100 / 200 g', shelf: '24 months', moq: '3 tons' },
+  { image: treatsImg, tag: 'Snacks', title: 'Treats & Snacks', protein: '18–28%', packs: '50 / 100 / 250 g', shelf: '12 months', moq: '2 tons' },
+];
+
+const privateLabelSteps = [
+  { n: '01', title: 'Recipe Selection', desc: 'Choose from 40+ tested formulas or co-develop a custom recipe with our nutritionists.' },
+  { n: '02', title: 'Packaging Design', desc: 'Bag, pouch or can — your brand artwork printed on export-ready packaging.' },
+  { n: '03', title: 'Manufacturing', desc: 'Production under HACCP & ISO 22000 with batch traceability and laboratory release.' },
+  { n: '04', title: 'Export & Delivery', desc: 'Full export paperwork, container loading and delivery to your destination port.' },
+];
+
+const manufacturingPoints = [
+  'Veterinary nutritionist supervision on every formula',
+  'In-house laboratory testing for each production batch',
+  'HACCP & ISO 22000 compliant production lines',
+  'Complete export documentation and customs support',
+  'End-to-end batch traceability and quality control',
+];
+
+const ingredientList = [
+  { icon: Drumstick, name: 'Chicken', desc: 'Premium poultry protein — highly digestible and palatable.' },
+  { icon: Beef, name: 'Lamb', desc: 'Hypoallergenic red meat rich in essential amino acids.' },
+  { icon: Beef, name: 'Beef', desc: 'High-quality beef protein for muscle development and energy.' },
+  { icon: Fish, name: 'Salmon', desc: 'Omega-3 rich salmon for skin, coat and immune health.' },
+  { icon: Wheat, name: 'Rice & Grains', desc: 'Easily digestible carbohydrate sources for steady energy.' },
+];
+
+const supplierCompare = {
+  traditional: [
+    'Multiple intermediaries between you and the factory',
+    'Higher final cost due to layered margins',
+    'Slow communication, weeks for clarification',
+    'Limited or no recipe / packaging customization',
+    'Fragmented documentation, customs risk',
+  ],
+  naturino: [
+    'Factory-direct pricing, no intermediaries',
+    'Dedicated export team and project manager',
+    'Response within 24 hours, transparent timelines',
+    'Full private-label and recipe customization',
+    'Complete export & veterinary documentation',
+  ],
+};
+
+const processSteps = [
+  { n: 1, icon: Send, title: 'Send Inquiry', desc: 'Share your target market, volume and product brief.' },
+  { n: 2, icon: PackageCheck, title: 'Receive Samples', desc: 'We ship production samples for your evaluation.' },
+  { n: 3, icon: ClipboardList, title: 'Approve Formulation', desc: 'Lock the recipe, packaging and specifications.' },
+  { n: 4, icon: Factory, title: 'Production', desc: 'Manufacturing under HACCP & ISO standards.' },
+  { n: 5, icon: Microscope, title: 'Quality Control', desc: 'Laboratory release and batch certification.' },
+  { n: 6, icon: Truck, title: 'Export Shipment', desc: 'Container loading, documents and delivery.' },
+];
+
+const certifications = [
+  { code: 'HACCP', title: 'HACCP', desc: 'Hazard analysis & critical control points.' },
+  { code: 'ISO', title: 'ISO 22000', desc: 'International food safety management.' },
+  { code: 'GMP', title: 'GMP', desc: 'Good manufacturing practice standards.' },
+  { code: 'VET', title: 'Veterinary', desc: 'State veterinary approval & registration.' },
+  { code: 'EXP', title: 'Export', desc: 'Customs and phytosanitary certificates.' },
 ];
 
 const articles = [
-  { key: 'art_1', tagFallback: 'Oziqlanish', titleFallback: 'Itingiz uchun to\'g\'ri ozuqani qanday tanlash kerak', descFallback: 'Yosh, zot va aktivlikka qarab kunlik ratsionni hisoblash bo\'yicha qo\'llanma.', image: puppyImg },
-  { key: 'art_2', tagFallback: 'Salomatlik', titleFallback: 'Mushukda urinariy sindrom: oldini olish va dieta', descFallback: 'Veterinardan amaliy maslahatlar va profilaktik ozuqalar tanlovi.', image: catImg },
-  { key: 'art_3', tagFallback: 'Parvarish', titleFallback: 'Sterilizatsiyadan keyin: yangi oziqlanish rejimi', descFallback: 'Ortiqcha vaznning oldini olish va metabolizmni qo\'llab-quvvatlash bo\'yicha qadam-baqadam.', image: lifestyleImg },
+  { tag: 'Export', title: 'How to choose pet food for export markets', desc: 'Key formulation, packaging and certification considerations for global distribution.', image: ingredientsImg },
+  { tag: 'Private Label', title: 'Private label opportunities in Central Asia', desc: 'Why brands are sourcing OEM production from Uzbekistan and what to expect.', image: factoryImg },
+  { tag: 'Quality', title: 'Pet food quality standards explained', desc: 'A practical guide to HACCP, ISO 22000, AAFCO and FEDIAF requirements.', image: dryDogImg },
 ];
 
 const faqs = [
-  { key: 'faq_1', q: 'Naturino mahsulotlari original ekanligini qanday bilsam bo\'ladi?', a: 'Biz faqat rasmiy distribyutorlar bilan ishlaymiz. Har bir qadoqda partiya raqami va ishlab chiqarish sanasi ko\'rsatilgan, talab qilsangiz sertifikat yuboramiz.' },
-  { key: 'faq_2', q: 'Yetkazib berish qancha vaqt oladi?', a: 'Toshkent bo\'ylab 1–2 ish kuni, viloyatlarga 2–4 ish kuni ichida yetkazib beramiz. 300 000 so\'mdan yuqori buyurtmalarga shahar ichida bepul.' },
-  { key: 'faq_3', q: 'Hayvonim uchun mos ozuqani qanday tanlayman?', a: 'Saytimizdagi tavsiya markazidan foydalaning yoki menejerimiz bilan bog\'laning — yoshi, vazni va salomatlik holatiga qarab tanlab beramiz.' },
-  { key: 'faq_4', q: 'Ozuqa hayvonimga to\'g\'ri kelmasa, qaytarib bo\'ladimi?', a: 'Ha. Ochilmagan qadoqlarni 14 kun ichida qaytarib berishingiz mumkin. Ochilgan qadoq bo\'lsa ham, sabab asosli bo\'lsa almashtirish imkoniyati bor.' },
-  { key: 'faq_5', q: 'Avtomatik oylik yetkazib berish bormi?', a: 'Ha. "Obuna" xizmati orqali har oy belgilangan kuni eshigingizgacha yetkazib beramiz va 7% chegirma beramiz.' },
+  { q: 'What is the MOQ?', a: 'Standard MOQ starts from 3 tons for wet food and 5 tons for dry food per SKU. Private-label MOQs are agreed per project.' },
+  { q: 'Which countries do you export to?', a: 'We currently export to 20+ countries across the CIS, Middle East, EU and South-East Asia. Full destination support is included.' },
+  { q: 'Do you offer private label production?', a: 'Yes. Full OEM/private-label service — recipe development, packaging design, manufacturing and export under your brand.' },
+  { q: 'What certifications do you have?', a: 'HACCP, ISO 22000, GMP, state veterinary approvals and full export documentation including phytosanitary and customs certificates.' },
+  { q: 'Can you customize recipes?', a: 'Yes. Our in-house veterinary nutritionists develop and adapt formulas based on your target market, animal type, life stage and price segment.' },
+];
+
+const trustIndicators = [
+  { value: '12+', label: 'Years Experience' },
+  { value: '20+', label: 'Export Countries' },
+  { value: '12 000+', label: 'Tons Annual Capacity' },
+  { value: '40+', label: 'SKU Products' },
 ];
 
 export default function Index() {
-  const { language } = useLanguage();
   useSEO({});
-  const { products: featuredProducts, loading: productsLoading } = useFeaturedProducts(6);
   const { settings } = useSystemSettings();
   const contactPhone = settings?.contact_phone || '+998 90 123 45 67';
+  const contactEmail = settings?.contact_email || 'export@naturino.uz';
 
-  const sAbout = useInView();
-  const sLines = useInView();
-  const sWhy = useInView();
-  const sIng = useInView();
-  const sQuality = useInView();
-  const sRec = useInView();
-  const sProd = useInView();
-  const sArt = useInView();
-  const sNews = useInView();
-  const sFaq = useInView();
-  const sCta = useInView();
+  const s = {
+    why: useInView(), cats: useInView(), pl: useInView(), mfg: useInView(),
+    ing: useInView(), cmp: useInView(), proc: useInView(), cert: useInView(),
+    blog: useInView(), faq: useInView(), cta: useInView(),
+  };
 
   return (
     <div className="min-h-screen bg-background">
 
-      {/* ============ HERO — full-bleed image with overlay text ============ */}
-      <section className="relative w-full min-h-[88vh] lg:min-h-[92vh] flex flex-col overflow-hidden">
-        {/* Background image */}
+      {/* ============ 1. HERO ============ */}
+      <section className="relative w-full min-h-[92vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <EditableImage
             contentKey="hero_image"
             fallbackSrc={heroImg}
-            alt="Naturino premium pet food"
+            alt="Naturino pet food manufacturing facility"
             className="w-full h-full object-cover"
             wrapperClassName="w-full h-full"
             section="hero"
           />
-          {/* Legibility overlays */}
-          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/20 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/40 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/35" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
         </div>
 
-        {/* Top meta strip */}
-        <div className="relative z-10 container mx-auto px-4 lg:px-8 pt-8 lg:pt-12">
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-6 lg:pb-8 border-b border-foreground/15 [&_a]:pointer-events-auto [&_[data-editable]]:pointer-events-auto">
-            <EditableText
-              contentKey="hero_eyebrow"
-              fallback="EST. 2020 — TOSHKENT"
-              as="span"
-              className="text-xs tracking-[0.3em] uppercase text-foreground/70"
-              section="hero"
-            />
-            <EditableText
-              contentKey="hero_meta"
-              fallback="Premium pet nutrition · Rasmiy distribyutor"
-              as="span"
-              className="text-xs tracking-wider uppercase text-foreground/70 hidden md:inline"
-              section="hero"
-            />
-          </div>
-        </div>
-
-        {/* Main content overlaid */}
-        <div className="relative z-10 flex-1 container mx-auto px-4 lg:px-8 py-12 lg:py-20 flex items-center pointer-events-none">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 w-full [&_a]:pointer-events-auto [&_button]:pointer-events-auto [&_[data-editable]]:pointer-events-auto">
-            {/* Headline */}
-            <div className="lg:col-span-7">
-              <h1 className="font-serif text-[2.75rem] sm:text-6xl lg:text-[5.5rem] leading-[0.95] tracking-tight text-foreground drop-shadow-sm">
-                <EditableText contentKey="hero_title_1" fallback="Sevgi bilan" as="span" className="block" section="hero" />
-                <EditableText contentKey="hero_title_2" fallback="tayyorlangan ovqat." as="span" className="block italic text-primary" section="hero" />
-                <EditableText contentKey="hero_title_3" fallback="Sog'liq bilan o'sgan do'st." as="span" className="block" section="hero" />
-              </h1>
-
-              <div className="mt-8 lg:mt-10 flex flex-wrap items-center gap-4">
-                <Button asChild size="lg" className="rounded-full px-8 h-14 text-sm tracking-wider uppercase shadow-lg">
-                  <Link to="/catalog">
-                    <EditableText contentKey="hero_cta_1" fallback="Mahsulotlarni ko'rish" as="span" section="hero" />
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="rounded-full h-14 px-8 text-sm tracking-wider uppercase bg-background/60 backdrop-blur-sm border-foreground/20">
-                  <Link to="/about">
-                    <EditableText contentKey="hero_cta_2" fallback="Naturino haqida" as="span" section="hero" />
-                  </Link>
-                </Button>
-              </div>
+        <div className="relative z-10 container mx-auto px-4 lg:px-8 py-24 lg:py-32">
+          <div className="max-w-4xl text-white">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8">
+              <span className="w-2 h-2 rounded-full bg-gold-accent animate-pulse" />
+              <EditableText contentKey="hero_eyebrow" fallback="EXPORT-READY MANUFACTURER · UZBEKISTAN" as="span" className="text-xs tracking-[0.25em] uppercase text-white/90" section="hero" />
             </div>
 
-            {/* Side description + stats */}
-            <div className="lg:col-span-5 lg:pt-6">
-              <div className="bg-background/60 backdrop-blur-sm rounded-sm p-6 lg:p-8 max-w-md border border-foreground/10">
-                <p className="text-base lg:text-lg text-foreground/80 leading-relaxed">
-                  <EditableText
-                    contentKey="hero_sub"
-                    fallback="Naturino — itlar va mushuklar uchun mutaxassislar tomonidan ishlab chiqilgan premium ozuqa brendi. Tabiiy ingredientlar, veterinariya nazorati va sevimli do'stingizning har bir hayot bosqichi uchun aniq formulalar."
-                    as="span"
-                    section="hero"
-                  />
-                </p>
-                <div className="mt-6 grid grid-cols-3 gap-4 pt-6 border-t border-foreground/10">
-                  <div>
-                    <div className="font-serif text-3xl text-foreground">35+</div>
-                    <EditableText contentKey="hero_stat_1" fallback="Ingredient turi" as="p" className="text-xs text-muted-foreground mt-1" section="hero" />
-                  </div>
-                  <div>
-                    <div className="font-serif text-3xl text-foreground">12</div>
-                    <EditableText contentKey="hero_stat_2" fallback="Maxsus liniya" as="p" className="text-xs text-muted-foreground mt-1" section="hero" />
-                  </div>
-                  <div>
-                    <div className="font-serif text-3xl text-foreground">5K+</div>
-                    <EditableText contentKey="hero_stat_3" fallback="Baxtli mijoz" as="p" className="text-xs text-muted-foreground mt-1" section="hero" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            <h1 className="font-heading text-4xl sm:text-5xl lg:text-7xl leading-[1.05] tracking-tight mb-6">
+              <EditableText contentKey="hero_title" fallback="Premium Pet Food Manufacturing for Global Markets" as="span" section="hero" />
+            </h1>
 
-      {/* ============ SHOP BY CATEGORIES ============ */}
-      <ShopByCategoriesSection />
+            <p className="text-lg lg:text-xl text-white/80 max-w-2xl leading-relaxed mb-10">
+              <EditableText
+                contentKey="hero_sub"
+                fallback="Export-ready dry and wet pet food, private label production and reliable manufacturing from Uzbekistan."
+                as="span"
+                section="hero"
+              />
+            </p>
 
-      {/* ============ ABOUT — alternating ============ */}
-      <section ref={sAbout.ref} className="py-20 lg:py-32 bg-secondary/30">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-center">
-            <div className={`lg:col-span-6 order-2 lg:order-1 transition-all duration-700 ${sAbout.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <div className="relative aspect-[4/5] overflow-hidden rounded-sm">
-                <EditableImage contentKey="about_image" fallbackSrc={productImg} alt="Naturino brand" className="w-full h-full object-cover" wrapperClassName="w-full h-full" section="about" />
-              </div>
-            </div>
-            <div className={`lg:col-span-6 order-1 lg:order-2 transition-all duration-700 delay-150 ${sAbout.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <EditableText contentKey="about_eyebrow" fallback="BRENDIMIZ" as="span" className="text-xs tracking-[0.3em] uppercase text-primary" section="about" />
-              <h2 className="mt-4 font-serif text-4xl md:text-5xl lg:text-6xl leading-tight text-foreground">
-                <EditableText contentKey="about_title" fallback="Tabiatdan ilhomlangan, fan tomonidan tasdiqlangan." as="span" section="about" />
-              </h2>
-              <div className="mt-8 space-y-5 text-muted-foreground leading-relaxed">
-                <EditableText
-                  contentKey="about_p1"
-                  fallback="Naturino — Yevropalik nutrisionistlar, veterinarlar va texnologlar tomonidan ishlab chiqarilgan premium pet-food brendi. Har bir formula uy hayvonlarining tabiiy ehtiyojlarini chuqur o'rganish asosida yaratilgan."
-                  as="p"
-                  section="about"
-                />
-                <EditableText
-                  contentKey="about_p2"
-                  fallback="Biz sun'iy bo'yoq, kuchaytirgich va konservantlardan voz kechdik. Faqat insonlar iste'mol qiladigan sifatdagi xom-ashyo — yangi go'sht, baliq, sabzavot va shifobaxsh o'tlar."
-                  as="p"
-                  section="about"
-                />
-              </div>
-              <div className="mt-10">
-                <Link to="/about" className="inline-flex items-center gap-2 text-sm tracking-wider uppercase font-medium text-foreground border-b border-foreground pb-1 hover:gap-3 transition-all">
-                  <EditableText contentKey="about_cta" fallback="Brend hikoyamiz" as="span" section="about" />
-                  <ArrowUpRight className="w-4 h-4" />
+            <div className="flex flex-wrap items-center gap-4 mb-14">
+              <Button asChild size="lg" className="rounded-2xl h-14 px-8 text-sm tracking-wider uppercase bg-gold-accent text-foreground hover:bg-gold-accent/90 shadow-xl">
+                <Link to="/contact">
+                  <EditableText contentKey="hero_cta_1" fallback="Request Quote" as="span" section="hero" />
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ PRODUCT LINES — editorial cards ============ */}
-      <section ref={sLines.ref} className="py-20 lg:py-32">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className={`max-w-3xl mb-14 lg:mb-20 transition-all duration-700 ${sLines.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <EditableText contentKey="lines_eyebrow" fallback="MAHSULOT LINIYALARI" as="span" className="text-xs tracking-[0.3em] uppercase text-primary" section="lines" />
-            <h2 className="mt-4 font-serif text-4xl md:text-5xl lg:text-6xl leading-tight text-foreground">
-              <EditableText contentKey="lines_title" fallback="Har bir hayot bosqichi uchun aniq formula." as="span" section="lines" />
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
-            {productLines.map((line, i) => {
-              const Icon = line.icon;
-              return (
-                <Link
-                  key={line.key}
-                  to={`/catalog?category=${line.slug}`}
-                  className={`group relative bg-background p-8 lg:p-10 flex flex-col min-h-[420px] hover:bg-secondary/40 transition-colors duration-500 ${sLines.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                  style={{ transitionDelay: `${i * 80}ms` }}
-                >
-                  <div className="flex items-start justify-between mb-8">
-                    <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center group-hover:border-primary group-hover:text-primary transition-colors">
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <EditableText contentKey={`${line.key}_tag`} fallback={line.tagFallback} as="span" className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground" section="lines" />
-                  </div>
-                  <div className="aspect-square w-24 mb-8 overflow-hidden rounded-sm">
-                    <img src={line.image} alt={line.titleFallback} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
-                  </div>
-                  <h3 className="font-serif text-3xl lg:text-4xl text-foreground mb-3">
-                    <EditableText contentKey={`${line.key}_title`} fallback={line.titleFallback} as="span" section="lines" />
-                  </h3>
-                  <EditableText contentKey={`${line.key}_desc`} fallback={line.descFallback} as="p" className="text-sm text-muted-foreground leading-relaxed mb-6" section="lines" />
-                  <span className="mt-auto inline-flex items-center gap-2 text-xs tracking-wider uppercase text-foreground/80 group-hover:gap-3 transition-all">
-                    Liniyani ko'rish <ArrowUpRight className="w-4 h-4" />
-                  </span>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="rounded-2xl h-14 px-8 text-sm tracking-wider uppercase bg-white/10 backdrop-blur-md text-white border-white/30 hover:bg-white/20 hover:text-white">
+                <Link to="/catalog">
+                  <Download className="w-4 h-4 mr-2" />
+                  <EditableText contentKey="hero_cta_2" fallback="Download Catalog" as="span" section="hero" />
                 </Link>
-              );
-            })}
-            {/* Filler card for symmetry */}
-            <div className="hidden lg:flex bg-primary/5 p-10 flex-col justify-between min-h-[420px]">
-              <div>
-                <EditableText contentKey="lines_extra_eyebrow" fallback="MASLAHAT" as="span" className="text-xs tracking-[0.3em] uppercase text-primary" section="lines" />
-                <h3 className="mt-4 font-serif text-3xl text-foreground leading-tight">
-                  <EditableText contentKey="lines_extra_title" fallback="Mos liniyani bilmayapsizmi?" as="span" section="lines" />
-                </h3>
-              </div>
-              <Button asChild variant="outline" className="rounded-full self-start mt-6">
-                <Link to="#recommendation">Tavsiya oling <ArrowRight className="w-4 h-4 ml-2" /></Link>
               </Button>
             </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 pt-10 border-t border-white/20">
+              {trustIndicators.map((t) => (
+                <div key={t.label}>
+                  <div className="font-heading text-3xl lg:text-4xl text-gold-accent">{t.value}</div>
+                  <div className="text-xs lg:text-sm text-white/70 mt-2 tracking-wide">{t.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ============ WHY NATURINO — manifesto ============ */}
-      <section ref={sWhy.ref} className="py-20 lg:py-32 bg-foreground text-background">
+      {/* ============ 2. WHY NATURINO ============ */}
+      <section ref={s.why.ref} className="py-24 lg:py-32 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className={`max-w-4xl transition-all duration-700 ${sWhy.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <EditableText contentKey="why_eyebrow" fallback="NEGA NATURINO" as="span" className="text-xs tracking-[0.3em] uppercase text-background/60" section="why" />
-            <h2 className="mt-4 font-serif text-4xl md:text-6xl lg:text-7xl leading-[1.05]">
-              <EditableText contentKey="why_title" fallback={"Biz \"oziq-ovqat\" sotmaymiz. Biz uzoq, sog'lom va baxtli umrni qadoqlaymiz."} as="span" section="why" />
+          <div className="max-w-3xl mb-16">
+            <span className="text-xs tracking-[0.3em] uppercase text-primary font-medium">WHY NATURINO</span>
+            <h2 className="mt-4 font-heading text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-foreground">
+              More Than a Supplier — A Long-Term Manufacturing Partner
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-14 mt-16 lg:mt-24">
-            {[
-              { k: 'why_1', icon: Leaf, t: 'Tabiiy formula', d: 'Sun\'iy bo\'yoq, konservant va kuchaytirgichlarsiz' },
-              { k: 'why_2', icon: Microscope, t: 'Veterinariya R&D', d: 'Har bir resept nutrisionist va veterinar tomonidan tasdiqlangan' },
-              { k: 'why_3', icon: ShieldCheck, t: 'Sifat nazorati', d: '14 bosqichli laboratoriya tekshiruvi va xalqaro sertifikatlar' },
-              { k: 'why_4', icon: Award, t: 'Hayot bosqichi', d: 'Mushukcha, voyaga yetgan, sterilizatsiyalangan, qariyalar uchun alohida' },
-            ].map((w, i) => {
-              const Icon = w.icon;
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {whyCards.map((c, i) => {
+              const Icon = c.icon;
               return (
-                <div key={w.k} className={`transition-all duration-700 ${sWhy.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: `${i * 100}ms` }}>
-                  <Icon className="w-7 h-7 mb-6 text-primary" />
-                  <h3 className="font-serif text-2xl mb-3">
-                    <EditableText contentKey={`${w.k}_t`} fallback={w.t} as="span" section="why" />
-                  </h3>
-                  <EditableText contentKey={`${w.k}_d`} fallback={w.d} as="p" className="text-sm text-background/70 leading-relaxed" section="why" />
+                <div
+                  key={c.title}
+                  className={`group p-8 rounded-2xl bg-card border border-border hover:border-primary/40 hover:shadow-warm-lg hover:-translate-y-1 transition-all duration-500 ${s.why.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+                  style={{ transitionDelay: `${i * 80}ms` }}
+                >
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-heading text-xl text-foreground mb-3">{c.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{c.desc}</p>
                 </div>
               );
             })}
@@ -307,31 +234,117 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ============ INGREDIENTS ============ */}
-      <section ref={sIng.ref} className="py-20 lg:py-32">
+      {/* ============ 3. PRODUCT CATEGORIES ============ */}
+      <section ref={s.cats.ref} className="py-24 lg:py-32 bg-warm-cream">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-            <div className={`lg:col-span-5 lg:sticky lg:top-24 self-start transition-all duration-700 ${sIng.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <EditableText contentKey="ing_eyebrow" fallback="INGREDIENTLAR" as="span" className="text-xs tracking-[0.3em] uppercase text-primary" section="ingredients" />
-              <h2 className="mt-4 font-serif text-4xl md:text-5xl lg:text-6xl leading-tight text-foreground">
-                <EditableText contentKey="ing_title" fallback="Qadoqdagi har bir donachani biz tanlaymiz." as="span" section="ingredients" />
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16">
+            <div className="max-w-2xl">
+              <span className="text-xs tracking-[0.3em] uppercase text-primary font-medium">PRODUCT LINES</span>
+              <h2 className="mt-4 font-heading text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-foreground">
+                Export-Ready Product Lines
               </h2>
-              <EditableText contentKey="ing_desc" fallback="Ingredientlar Italiya, Norvegiya va O'zbekiston fermerlaridan keladi. Hech qanday yashirin formula yo'q — har bir komponent qadoqda ochiq yozilgan." as="p" className="mt-6 text-muted-foreground leading-relaxed" section="ingredients" />
-              <div className="mt-10 aspect-[4/3] overflow-hidden rounded-sm">
-                <EditableImage contentKey="ing_image" fallbackSrc={ingredientsImg} alt="Naturino ingredients" className="w-full h-full object-cover" wrapperClassName="w-full h-full" section="ingredients" />
+            </div>
+            <Button asChild variant="outline" className="rounded-2xl h-12 px-6 self-start">
+              <Link to="/catalog">View Full Catalog <ArrowUpRight className="w-4 h-4 ml-2" /></Link>
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categories.map((c, i) => (
+              <div
+                key={c.title}
+                className={`group rounded-2xl overflow-hidden bg-card border border-border hover:shadow-warm-lg hover:-translate-y-1 transition-all duration-500 ${s.cats.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+                style={{ transitionDelay: `${i * 80}ms` }}
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                  <img src={c.image} alt={c.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                  <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-background/95 backdrop-blur-sm text-[10px] tracking-[0.2em] uppercase text-primary font-semibold">
+                    {c.tag}
+                  </span>
+                </div>
+                <div className="p-7">
+                  <h3 className="font-heading text-2xl text-foreground mb-5">{c.title}</h3>
+                  <dl className="grid grid-cols-2 gap-y-3 gap-x-4 text-sm">
+                    <div><dt className="text-[10px] uppercase tracking-wider text-muted-foreground">Protein</dt><dd className="text-foreground font-medium mt-0.5">{c.protein}</dd></div>
+                    <div><dt className="text-[10px] uppercase tracking-wider text-muted-foreground">Shelf life</dt><dd className="text-foreground font-medium mt-0.5">{c.shelf}</dd></div>
+                    <div><dt className="text-[10px] uppercase tracking-wider text-muted-foreground">Packaging</dt><dd className="text-foreground font-medium mt-0.5">{c.packs}</dd></div>
+                    <div><dt className="text-[10px] uppercase tracking-wider text-muted-foreground">MOQ</dt><dd className="text-foreground font-medium mt-0.5">{c.moq}</dd></div>
+                  </dl>
+                  <Link to="/catalog" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-all">
+                    Request specifications <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ 4. PRIVATE LABEL ============ */}
+      <section ref={s.pl.ref} className="py-24 lg:py-32 bg-primary text-primary-foreground relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_30%_20%,white,transparent_60%)]" />
+        <div className="container mx-auto px-4 lg:px-8 relative">
+          <div className="max-w-3xl mb-16">
+            <span className="text-xs tracking-[0.3em] uppercase text-gold-accent font-medium">PRIVATE LABEL · OEM</span>
+            <h2 className="mt-4 font-heading text-4xl md:text-5xl lg:text-6xl leading-[1.1]">
+              Your Brand, Our Manufacturing
+            </h2>
+            <p className="mt-6 text-lg text-primary-foreground/80 leading-relaxed">
+              From concept to container — we build private-label pet food for distributors, retailers and emerging brands worldwide.
+            </p>
+          </div>
+
+          <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {privateLabelSteps.map((step, i) => (
+              <div
+                key={step.n}
+                className={`relative rounded-2xl bg-primary-foreground/5 backdrop-blur-sm border border-primary-foreground/15 p-8 hover:bg-primary-foreground/10 transition-all duration-500 ${s.pl.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+                style={{ transitionDelay: `${i * 100}ms` }}
+              >
+                <div className="font-heading text-5xl text-gold-accent mb-6">{step.n}</div>
+                <h3 className="font-heading text-xl mb-3">{step.title}</h3>
+                <p className="text-sm text-primary-foreground/75 leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <Button asChild size="lg" className="rounded-2xl h-14 px-8 bg-gold-accent text-foreground hover:bg-gold-accent/90 text-sm tracking-wider uppercase">
+            <Link to="/contact">Start Private Label Project <ArrowRight className="w-4 h-4 ml-2" /></Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* ============ 5. MANUFACTURING EXCELLENCE ============ */}
+      <section ref={s.mfg.ref} className="py-24 lg:py-32 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            <div className={`lg:col-span-7 transition-all duration-700 ${s.mfg.isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-6'}`}>
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-warm-lg">
+                <img src={factoryImg} alt="Naturino manufacturing facility" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute bottom-6 left-6 right-6 flex items-center gap-4 p-5 rounded-2xl bg-background/95 backdrop-blur-md">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                    <Factory className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="text-xs tracking-wider uppercase text-muted-foreground">Production capacity</div>
+                    <div className="font-heading text-lg text-foreground">12 000+ tons / year</div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className={`lg:col-span-7 transition-all duration-700 delay-150 ${sIng.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <ul className="divide-y divide-border">
-                {ingredients.map((ing, i) => (
-                  <li key={ing.key} className="py-8 lg:py-10 grid grid-cols-12 gap-6 items-baseline group">
-                    <span className="col-span-2 font-serif text-xl text-muted-foreground">0{i + 1}</span>
-                    <div className="col-span-10">
-                      <h3 className="font-serif text-2xl lg:text-3xl text-foreground mb-2 group-hover:text-primary transition-colors">
-                        <EditableText contentKey={`${ing.key}_t`} fallback={ing.titleFallback} as="span" section="ingredients" />
-                      </h3>
-                      <EditableText contentKey={`${ing.key}_d`} fallback={ing.descFallback} as="p" className="text-sm text-muted-foreground" section="ingredients" />
-                    </div>
+
+            <div className={`lg:col-span-5 transition-all duration-700 delay-150 ${s.mfg.isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-6'}`}>
+              <span className="text-xs tracking-[0.3em] uppercase text-primary font-medium">MANUFACTURING</span>
+              <h2 className="mt-4 font-heading text-4xl md:text-5xl leading-[1.1] text-foreground">
+                Manufactured Under International Standards
+              </h2>
+              <ul className="mt-10 space-y-5">
+                {manufacturingPoints.map((p) => (
+                  <li key={p} className="flex items-start gap-4">
+                    <span className="mt-1 w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 className="w-4 h-4" />
+                    </span>
+                    <span className="text-base text-foreground/85 leading-relaxed">{p}</span>
                   </li>
                 ))}
               </ul>
@@ -340,197 +353,202 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ============ QUALITY / CERTIFICATION ============ */}
-      <section ref={sQuality.ref} className="py-20 lg:py-32 bg-secondary/30">
+      {/* ============ 6. INGREDIENTS ============ */}
+      <section ref={s.ing.ref} className="py-24 lg:py-32 bg-warm-cream">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-center">
-            <div className={`lg:col-span-6 transition-all duration-700 ${sQuality.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <div className="relative aspect-[3/4] overflow-hidden rounded-sm">
-                <EditableImage contentKey="quality_image" fallbackSrc={vetImg} alt="Quality control" className="w-full h-full object-cover" wrapperClassName="w-full h-full" section="quality" />
-              </div>
-            </div>
-            <div className={`lg:col-span-6 transition-all duration-700 delay-150 ${sQuality.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <EditableText contentKey="quality_eyebrow" fallback="SIFAT VA SERTIFIKATLAR" as="span" className="text-xs tracking-[0.3em] uppercase text-primary" section="quality" />
-              <h2 className="mt-4 font-serif text-4xl md:text-5xl lg:text-6xl leading-tight text-foreground">
-                <EditableText contentKey="quality_title" fallback="Ishonchni har bir bosqichda quramiz." as="span" section="quality" />
-              </h2>
-              <EditableText contentKey="quality_desc" fallback="Naturino ishlab chiqarishi xalqaro standartlar bo'yicha sertifikatlangan zavodlarda amalga oshiriladi. Har bir partiya yetkazib berishdan oldin mustaqil laboratoriyada tekshiriladi." as="p" className="mt-6 text-muted-foreground leading-relaxed" section="quality" />
+          <div className="max-w-3xl mb-16">
+            <span className="text-xs tracking-[0.3em] uppercase text-primary font-medium">INGREDIENTS</span>
+            <h2 className="mt-4 font-heading text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-foreground">
+              Quality Starts With Ingredients
+            </h2>
+            <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+              Natural ingredients, balanced nutrition and controlled sourcing — every raw material is verified before it enters our production line.
+            </p>
+          </div>
 
-              <div className="mt-10 grid grid-cols-2 gap-px bg-border border border-border">
-                {[
-                  { k: 'cert_1', t: 'ISO 22000', d: 'Oziq-ovqat xavfsizligi' },
-                  { k: 'cert_2', t: 'HACCP', d: 'Xavfli omillar nazorati' },
-                  { k: 'cert_3', t: 'FEDIAF', d: 'Yevropa pet-food standarti' },
-                  { k: 'cert_4', t: 'GMP+', d: 'Sifatli ishlab chiqarish' },
-                ].map(c => (
-                  <div key={c.k} className="bg-background p-6">
-                    <div className="font-serif text-2xl text-foreground">
-                      <EditableText contentKey={`${c.k}_t`} fallback={c.t} as="span" section="quality" />
-                    </div>
-                    <EditableText contentKey={`${c.k}_d`} fallback={c.d} as="p" className="text-xs text-muted-foreground mt-1" section="quality" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+            {ingredientList.map((ing, i) => {
+              const Icon = ing.icon;
+              return (
+                <div
+                  key={ing.name}
+                  className={`group p-6 rounded-2xl bg-card border border-border text-center hover:border-primary/40 hover:-translate-y-1 transition-all duration-500 ${s.ing.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+                  style={{ transitionDelay: `${i * 70}ms` }}
+                >
+                  <div className="w-14 h-14 rounded-2xl bg-gold-accent/15 text-gold-accent flex items-center justify-center mx-auto mb-4 group-hover:bg-gold-accent group-hover:text-white transition-colors">
+                    <Icon className="w-6 h-6" />
                   </div>
+                  <h3 className="font-heading text-lg text-foreground mb-2">{ing.name}</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{ing.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ 7. EXPORT ADVANTAGES — COMPARISON ============ */}
+      <section ref={s.cmp.ref} className="py-24 lg:py-32 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="max-w-3xl mb-16">
+            <span className="text-xs tracking-[0.3em] uppercase text-primary font-medium">EXPORT ADVANTAGES</span>
+            <h2 className="mt-4 font-heading text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-foreground">
+              Traditional Supplier vs Naturino
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="rounded-2xl p-8 lg:p-10 bg-muted/40 border border-border">
+              <div className="flex items-center gap-3 mb-8">
+                <span className="text-xs tracking-[0.25em] uppercase text-muted-foreground font-semibold">Traditional Supplier</span>
+              </div>
+              <ul className="space-y-4">
+                {supplierCompare.traditional.map((t) => (
+                  <li key={t} className="flex items-start gap-3">
+                    <XCircle className="w-5 h-5 text-destructive/70 flex-shrink-0 mt-0.5" />
+                    <span className="text-muted-foreground">{t}</span>
+                  </li>
                 ))}
+              </ul>
+            </div>
+
+            <div className="rounded-2xl p-8 lg:p-10 bg-primary text-primary-foreground border-2 border-gold-accent shadow-warm-lg">
+              <div className="flex items-center gap-3 mb-8">
+                <span className="px-3 py-1 rounded-full bg-gold-accent text-foreground text-[10px] tracking-[0.2em] uppercase font-semibold">Naturino</span>
               </div>
+              <ul className="space-y-4">
+                {supplierCompare.naturino.map((t) => (
+                  <li key={t} className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-gold-accent flex-shrink-0 mt-0.5" />
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ============ RECOMMENDATION CENTER ============ */}
-      <section ref={sRec.ref} id="recommendation" className="py-20 lg:py-32">
+      {/* ============ 8. PROCESS ============ */}
+      <section ref={s.proc.ref} className="py-24 lg:py-32 bg-warm-cream">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="relative rounded-sm overflow-hidden bg-primary/10 p-8 md:p-14 lg:p-20">
-            <div className={`max-w-3xl transition-all duration-700 ${sRec.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <EditableText contentKey="rec_eyebrow" fallback="TAVSIYA MARKAZI" as="span" className="text-xs tracking-[0.3em] uppercase text-primary" section="recommendation" />
-              <h2 className="mt-4 font-serif text-4xl md:text-5xl lg:text-6xl leading-tight text-foreground">
-                <EditableText contentKey="rec_title" fallback="Hayvoningiz uchun mukammal ozuqani 60 soniyada toping." as="span" section="recommendation" />
-              </h2>
-              <EditableText contentKey="rec_desc" fallback="3 ta savolga javob bering — biz yoshi, zoti, vazni va salomatlik holatiga qarab ozuqa tanlab beramiz. Bepul va majburiyatlarsiz." as="p" className="mt-6 text-muted-foreground leading-relaxed max-w-xl" section="recommendation" />
+          <div className="max-w-3xl mb-16 text-center mx-auto">
+            <span className="text-xs tracking-[0.3em] uppercase text-primary font-medium">PROCESS</span>
+            <h2 className="mt-4 font-heading text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-foreground">
+              How Cooperation Works
+            </h2>
+          </div>
 
-              <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl">
-                <Link to="/catalog?pet=dog" className="group flex items-center gap-4 bg-background border border-border rounded-sm p-5 hover:border-primary transition-colors">
-                  <Dog className="w-6 h-6 text-primary" />
-                  <div>
-                    <EditableText contentKey="rec_opt_1" fallback="Itim bor" as="span" className="font-serif text-lg block text-foreground" section="recommendation" />
-                    <span className="text-xs text-muted-foreground">Tanlash →</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {processSteps.map((step, i) => {
+              const Icon = step.icon;
+              return (
+                <div
+                  key={step.n}
+                  className={`relative rounded-2xl bg-card border border-border p-7 hover:border-primary/40 hover:shadow-warm transition-all duration-500 ${s.proc.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+                  style={{ transitionDelay: `${i * 70}ms` }}
+                >
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <span className="font-heading text-3xl text-muted-foreground/40">0{step.n}</span>
                   </div>
-                </Link>
-                <Link to="/catalog?pet=cat" className="group flex items-center gap-4 bg-background border border-border rounded-sm p-5 hover:border-primary transition-colors">
-                  <Cat className="w-6 h-6 text-primary" />
-                  <div>
-                    <EditableText contentKey="rec_opt_2" fallback="Mushugim bor" as="span" className="font-serif text-lg block text-foreground" section="recommendation" />
-                    <span className="text-xs text-muted-foreground">Tanlash →</span>
-                  </div>
-                </Link>
-                <Link to="/contact" className="group flex items-center gap-4 bg-background border border-border rounded-sm p-5 hover:border-primary transition-colors">
-                  <Stethoscope className="w-6 h-6 text-primary" />
-                  <div>
-                    <EditableText contentKey="rec_opt_3" fallback="Veterinar bilan" as="span" className="font-serif text-lg block text-foreground" section="recommendation" />
-                    <span className="text-xs text-muted-foreground">Bog'lanish →</span>
-                  </div>
-                </Link>
+                  <h3 className="font-heading text-xl text-foreground mb-2">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ 9. CERTIFICATIONS ============ */}
+      <section ref={s.cert.ref} className="py-24 lg:py-32 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="max-w-3xl mb-16">
+            <span className="text-xs tracking-[0.3em] uppercase text-primary font-medium">CERTIFICATIONS</span>
+            <h2 className="mt-4 font-heading text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-foreground">
+              Certified for Global Trade
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+            {certifications.map((c, i) => (
+              <div
+                key={c.code}
+                className={`group aspect-square rounded-2xl bg-card border border-border p-6 flex flex-col items-center justify-center text-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-500 ${s.cert.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+                style={{ transitionDelay: `${i * 80}ms` }}
+              >
+                <div className="w-14 h-14 rounded-full border-2 border-gold-accent text-gold-accent flex items-center justify-center mb-4 group-hover:bg-gold-accent group-hover:text-foreground transition-colors">
+                  <Award className="w-6 h-6" />
+                </div>
+                <div className="font-heading text-lg mb-1">{c.title}</div>
+                <p className="text-[11px] leading-relaxed opacity-75">{c.desc}</p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ============ FEATURED PRODUCTS ============ */}
-      <section ref={sProd.ref} className="py-20 lg:py-32 bg-secondary/30">
+      {/* ============ 10. INSIGHTS / BLOG ============ */}
+      <section ref={s.blog.ref} className="py-24 lg:py-32 bg-warm-cream">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className={`flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 lg:mb-20 transition-all duration-700 ${sProd.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16">
             <div className="max-w-2xl">
-              <EditableText contentKey="prod_eyebrow" fallback="KATALOG" as="span" className="text-xs tracking-[0.3em] uppercase text-primary" section="products" />
-              <h2 className="mt-4 font-serif text-4xl md:text-5xl lg:text-6xl leading-tight text-foreground">
-                <EditableText contentKey="prod_title" fallback="Tanlangan mahsulotlar" as="span" section="products" />
+              <span className="text-xs tracking-[0.3em] uppercase text-primary font-medium">INSIGHTS</span>
+              <h2 className="mt-4 font-heading text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-foreground">
+                Industry Insights
               </h2>
             </div>
-            <Button asChild variant="ghost" className="rounded-full self-start md:self-end">
-              <Link to="/catalog">Barchasini ko'rish <ArrowRight className="w-4 h-4 ml-2" /></Link>
-            </Button>
           </div>
 
-          {productsLoading ? (
-            <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
-          ) : featuredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              {featuredProducts.map(p => <ProductCard key={p.id} product={p} />)}
-            </div>
-          ) : (
-            <p className="text-center text-muted-foreground py-20">Mahsulotlar tez orada qo'shiladi</p>
-          )}
-        </div>
-      </section>
-
-      {/* ============ ARTICLES / BLOG ============ */}
-      <section ref={sArt.ref} className="py-20 lg:py-32">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className={`flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 lg:mb-20 transition-all duration-700 ${sArt.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <div className="max-w-2xl">
-              <EditableText contentKey="art_eyebrow" fallback="JURNAL" as="span" className="text-xs tracking-[0.3em] uppercase text-primary" section="articles" />
-              <h2 className="mt-4 font-serif text-4xl md:text-5xl lg:text-6xl leading-tight text-foreground">
-                <EditableText contentKey="art_title" fallback="Bilim — eng yaxshi parvarish." as="span" section="articles" />
-              </h2>
-            </div>
-            <EditableText contentKey="art_desc" fallback="Veterinarlar va mutaxassislardan amaliy maslahatlar, oziqlanish bo'yicha qo'llanmalar va salomatlik haqida maqolalar." as="p" className="text-muted-foreground max-w-md" section="articles" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((a, i) => (
-              <article key={a.key} className={`group transition-all duration-700 ${sArt.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: `${i * 100}ms` }}>
-                <div className="relative aspect-[4/5] overflow-hidden rounded-sm mb-6">
-                  <img src={a.image} alt={a.titleFallback} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                  <span className="absolute top-4 left-4 bg-background px-3 py-1 text-[10px] tracking-[0.2em] uppercase">
-                    <EditableText contentKey={`${a.key}_tag`} fallback={a.tagFallback} as="span" section="articles" />
+              <article
+                key={a.title}
+                className={`group rounded-2xl overflow-hidden bg-card border border-border hover:shadow-warm-lg hover:-translate-y-1 transition-all duration-500 ${s.blog.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+                style={{ transitionDelay: `${i * 90}ms` }}
+              >
+                <div className="aspect-[16/10] overflow-hidden bg-muted">
+                  <img src={a.image} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                </div>
+                <div className="p-7">
+                  <span className="text-[10px] tracking-[0.25em] uppercase text-primary font-semibold">{a.tag}</span>
+                  <h3 className="mt-3 font-heading text-xl text-foreground leading-snug">{a.title}</h3>
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{a.desc}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-all">
+                    Read article <ArrowRight className="w-4 h-4" />
                   </span>
                 </div>
-                <h3 className="font-serif text-2xl text-foreground leading-snug mb-3 group-hover:text-primary transition-colors">
-                  <EditableText contentKey={`${a.key}_t`} fallback={a.titleFallback} as="span" section="articles" />
-                </h3>
-                <EditableText contentKey={`${a.key}_d`} fallback={a.descFallback} as="p" className="text-sm text-muted-foreground leading-relaxed" section="articles" />
-                <span className="mt-4 inline-flex items-center gap-2 text-xs tracking-wider uppercase text-foreground">
-                  O'qish <ArrowUpRight className="w-3 h-3" />
-                </span>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ============ NEWS / PROMOTIONS ============ */}
-      <section ref={sNews.ref} className="py-20 lg:py-32 bg-secondary/30">
+      {/* ============ 11. FAQ ============ */}
+      <section ref={s.faq.ref} className="py-24 lg:py-32 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
-            <div className={`relative overflow-hidden rounded-sm aspect-[4/3] lg:aspect-auto lg:min-h-[480px] bg-foreground text-background p-8 lg:p-14 flex flex-col justify-between transition-all duration-700 ${sNews.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <img src={puppyImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" loading="lazy" />
-              <div className="relative">
-                <EditableText contentKey="news_1_tag" fallback="AKSIYA" as="span" className="text-xs tracking-[0.3em] uppercase text-primary" section="news" />
-                <h3 className="mt-4 font-serif text-4xl lg:text-5xl leading-tight">
-                  <EditableText contentKey="news_1_t" fallback="Yangi mijozlarga birinchi buyurtmaga -15%" as="span" section="news" />
-                </h3>
-              </div>
-              <Button asChild variant="outline" className="relative self-start rounded-full border-background/40 text-background hover:bg-background hover:text-foreground bg-transparent">
-                <Link to="/catalog">Aksiyani olish <ArrowRight className="w-4 h-4 ml-2" /></Link>
-              </Button>
-            </div>
-            <div className={`relative overflow-hidden rounded-sm aspect-[4/3] lg:aspect-auto lg:min-h-[480px] bg-primary/15 p-8 lg:p-14 flex flex-col justify-between transition-all duration-700 delay-150 ${sNews.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <div>
-                <EditableText contentKey="news_2_tag" fallback="OBUNA" as="span" className="text-xs tracking-[0.3em] uppercase text-primary" section="news" />
-                <h3 className="mt-4 font-serif text-4xl lg:text-5xl leading-tight text-foreground">
-                  <EditableText contentKey="news_2_t" fallback="Oylik avtomatik yetkazib berish — har safar 7% chegirma" as="span" section="news" />
-                </h3>
-              </div>
-              <Button asChild className="self-start rounded-full">
-                <Link to="/catalog">Obuna bo'lish <ArrowRight className="w-4 h-4 ml-2" /></Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ FAQ ============ */}
-      <section ref={sFaq.ref} className="py-20 lg:py-32">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-            <div className={`lg:col-span-5 lg:sticky lg:top-24 self-start transition-all duration-700 ${sFaq.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <EditableText contentKey="faq_eyebrow" fallback="SAVOL-JAVOB" as="span" className="text-xs tracking-[0.3em] uppercase text-primary" section="faq" />
-              <h2 className="mt-4 font-serif text-4xl md:text-5xl lg:text-6xl leading-tight text-foreground">
-                <EditableText contentKey="faq_title" fallback="Tez-tez beriladigan savollar." as="span" section="faq" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div className="lg:col-span-5">
+              <span className="text-xs tracking-[0.3em] uppercase text-primary font-medium">FAQ</span>
+              <h2 className="mt-4 font-heading text-4xl md:text-5xl leading-[1.1] text-foreground">
+                Frequently Asked Questions
               </h2>
-              <EditableText contentKey="faq_desc" fallback="Javob topa olmadingizmi? Menejerimiz Telegram orqali 5 daqiqada javob beradi." as="p" className="mt-6 text-muted-foreground" section="faq" />
-              <Button asChild variant="outline" className="mt-8 rounded-full">
-                <Link to="/contact">Savol berish <ArrowRight className="w-4 h-4 ml-2" /></Link>
-              </Button>
+              <p className="mt-6 text-muted-foreground leading-relaxed">
+                Quick answers for distributors, importers and private-label partners. Need more detail? Our export team responds within 24 hours.
+              </p>
             </div>
-            <div className={`lg:col-span-7 transition-all duration-700 delay-150 ${sFaq.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <Accordion type="single" collapsible className="w-full">
-                {faqs.map(f => (
-                  <AccordionItem key={f.key} value={f.key} className="border-b border-border">
-                    <AccordionTrigger className="py-6 text-left font-serif text-lg lg:text-xl text-foreground hover:no-underline hover:text-primary [&[data-state=open]]:text-primary">
-                      <EditableText contentKey={`${f.key}_q`} fallback={f.q} as="span" section="faq" />
+            <div className="lg:col-span-7">
+              <Accordion type="single" collapsible className="space-y-3">
+                {faqs.map((f, i) => (
+                  <AccordionItem key={i} value={`faq-${i}`} className="rounded-2xl border border-border bg-card px-6 data-[state=open]:border-primary/40 data-[state=open]:shadow-warm">
+                    <AccordionTrigger className="text-left font-heading text-base lg:text-lg py-5 hover:no-underline">
+                      {f.q}
                     </AccordionTrigger>
-                    <AccordionContent className="pb-6 text-muted-foreground leading-relaxed">
-                      <EditableText contentKey={`${f.key}_a`} fallback={f.a} as="span" section="faq" />
+                    <AccordionContent className="text-muted-foreground leading-relaxed pb-5">
+                      {f.a}
                     </AccordionContent>
                   </AccordionItem>
                 ))}
@@ -540,38 +558,41 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ============ CTA ============ */}
-      <section ref={sCta.ref} className="py-20 lg:py-32 bg-foreground text-background relative overflow-hidden">
+      {/* ============ 12. FINAL CTA ============ */}
+      <section ref={s.cta.ref} className="py-24 lg:py-32 bg-primary text-primary-foreground relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.05] bg-[radial-gradient(circle_at_70%_30%,white,transparent_55%)]" />
         <div className="container mx-auto px-4 lg:px-8 relative">
-          <div className={`max-w-4xl transition-all duration-700 ${sCta.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <Sparkles className="w-8 h-8 text-primary mb-6" />
-            <h2 className="font-serif text-5xl md:text-6xl lg:text-8xl leading-[0.95]">
-              <EditableText contentKey="cta_title_1" fallback="Hayvoningizga" as="span" className="block" section="cta" />
-              <EditableText contentKey="cta_title_2" fallback="munosib ovqatni bering." as="span" className="block italic text-primary" section="cta" />
+          <div className="max-w-4xl mx-auto text-center">
+            <Sparkles className="w-10 h-10 text-gold-accent mx-auto mb-6" />
+            <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl leading-[1.1] mb-6">
+              Let's Build Your Pet Food Brand
             </h2>
-            <EditableText contentKey="cta_desc" fallback="Birinchi buyurtmangizga -15% chegirma va bepul veterinar maslahati." as="p" className="mt-8 text-lg text-background/70 max-w-xl" section="cta" />
+            <p className="text-lg lg:text-xl text-primary-foreground/80 max-w-2xl mx-auto mb-10 leading-relaxed">
+              Our export team will respond within 24 hours with samples, pricing and a tailored proposal for your market.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 mb-12">
+              <Button asChild size="lg" className="rounded-2xl h-14 px-8 bg-gold-accent text-foreground hover:bg-gold-accent/90 text-sm tracking-wider uppercase shadow-xl">
+                <Link to="/contact">Request Quote <ArrowRight className="w-4 h-4 ml-2" /></Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="rounded-2xl h-14 px-8 bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white text-sm tracking-wider uppercase">
+                <Link to="/contact"><MessageSquare className="w-4 h-4 mr-2" /> Contact Export Team</Link>
+              </Button>
+            </div>
 
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Button asChild size="lg" className="rounded-full h-14 px-8 text-sm tracking-wider uppercase">
-                <Link to="/catalog">Hozir buyurtma berish <ArrowRight className="w-4 h-4 ml-2" /></Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full h-14 px-8 border-background/30 bg-transparent text-background hover:bg-background hover:text-foreground text-sm tracking-wider uppercase">
-                <a href={`tel:${contactPhone.replace(/\s/g, '')}`}>
-                  <Phone className="w-4 h-4 mr-2" />{contactPhone}
-                </a>
-              </Button>
-              {settings?.social_telegram && (
-                <Button asChild variant="ghost" size="lg" className="rounded-full h-14 px-6 text-background hover:bg-background/10 text-sm tracking-wider uppercase">
-                  <a href={settings.social_telegram} target="_blank" rel="noopener noreferrer">
-                    <Send className="w-4 h-4 mr-2" /> Telegram
-                  </a>
-                </Button>
-              )}
+            <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 text-sm text-primary-foreground/75 pt-10 border-t border-primary-foreground/15">
+              <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="inline-flex items-center gap-2 hover:text-gold-accent transition-colors">
+                <Phone className="w-4 h-4" /> {contactPhone}
+              </a>
+              <a href={`mailto:${contactEmail}`} className="inline-flex items-center gap-2 hover:text-gold-accent transition-colors">
+                <Mail className="w-4 h-4" /> {contactEmail}
+              </a>
+              <span className="inline-flex items-center gap-2">
+                <MapPin className="w-4 h-4" /> Tashkent, Uzbekistan
+              </span>
             </div>
           </div>
         </div>
       </section>
-
     </div>
   );
 }
