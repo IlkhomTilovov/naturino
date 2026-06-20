@@ -59,7 +59,8 @@ import CheckoutFormSettings from "./pages/admin/CheckoutFormSettings";
 import AdminAnalytics from "./pages/admin/Analytics";
 import ComingSoon from "./pages/admin/ComingSoon";
 import CmsPages from "./pages/admin/CmsPages";
-import CmsPageEdit from "./pages/admin/CmsPageEdit";
+import CmsPageEditor from "./pages/admin/CmsPageEditor";
+import CmsPage from "./pages/CmsPage";
 
 const queryClient = new QueryClient();
 
@@ -180,7 +181,7 @@ const App = () => (
                           } />
                           <Route path="cms/pages/:id" element={
                             <ProtectedRoute module="cms_pages">
-                              <CmsPageEdit />
+                              <CmsPageEditor />
                             </ProtectedRoute>
                           } />
                           <Route path="cms/blog" element={
@@ -232,6 +233,7 @@ const App = () => (
                               <Route path="/sifat" element={<Sifat />} />
                               <Route path="/ishlab-chiqarish" element={<IshlabChiqarish />} />
                               <Route path="/eksport" element={<Eksport />} />
+                              <Route path="/page/:slug" element={<CmsPage />} />
                               <Route path="/cart" element={<Cart />} />
                               <Route path="/checkout" element={<Checkout />} />
                               <Route path="/thank-you" element={<ThankYou />} />

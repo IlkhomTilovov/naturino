@@ -1,211 +1,194 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, Pencil, Trash2, Eye, EyeOff, FileText } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Plus, Pencil, Trash2, Search, ExternalLink, Eye, EyeOff, Files, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import {
-  Dialog, DialogContent, DialogDescription, DialogFooter,
-  DialogHeader, DialogTitle, DialogTrigger,
-} from '@/components/ui/dialog';
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Skeleton } from '@/components/ui/skeleton';
-import { toast } from 'sonner';
-import { useLanguages } from '@/hooks/useLanguages';
+import { useToast } from '@/hooks/use-toast';
 
 interface PageRow {
   id: string;
+  title: string;
   slug: string;
-  page_type: string;
-  is_active: boolean;
-  is_system: boolean;
-  show_in_menu: boolean;
-  sort_order: number;
+  status: 'draft' | 'published';
   updated_at: string;
-  page_translations: { language_code: string; title: string }[];
 }
 
 export default function CmsPages() {
   const [pages, setPages] = useState<PageRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [createOpen, setCreateOpen] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [newSlug, setNewSlug] = useState('');
-  const [newTitle, setNewTitle] = useState('');
-  const { defaultLanguage, activeLanguages } = useLanguages();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<PageRow | null>(null);
+  const [busy, setBusy] = useState(false);
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const load = async () => {
+  const fetchPages = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('pages')
-      .select('id, slug, page_type, is_active, is_system, show_in_menu, sort_order, updated_at, page_translations(language_code, title)')
-      .order('sort_order', { ascending: true })
-      .order('created_at', { ascending: false });
-    if (error) {
-      toast.error('Sahifalarni yuklashda xatolik: ' + error.message);
-    } else {
+    try {
+      const { data, error } = await supabase
+        .from('cms_pages' as any)
+        .select('id, title, slug, status, updated_at')
+        .order('sort_order', { ascending: true })
+        .order('updated_at', { ascending: false });
+      if (error) throw error;
       setPages((data as any) || []);
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Xatolik', description: err.message });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { fetchPages(); }, []);
 
-  const handleCreate = async () => {
-    if (!newSlug.trim() || !newTitle.trim()) {
-      toast.error('Slug va sarlavha kerak');
-      return;
+  const togglePublish = async (page: PageRow) => {
+    const nextStatus = page.status === 'published' ? 'draft' : 'published';
+    setBusy(true);
+    try {
+      const { error } = await supabase
+        .from('cms_pages' as any)
+        .update({ status: nextStatus, published_at: nextStatus === 'published' ? new Date().toISOString() : null })
+        .eq('id', page.id);
+      if (error) throw error;
+      toast({ title: 'Saqlandi', description: nextStatus === 'published' ? "Sahifa e'lon qilindi" : 'Sahifa qoralama qilindi' });
+      fetchPages();
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Xatolik', description: err.message });
+    } finally {
+      setBusy(false);
     }
-    if (!defaultLanguage) {
-      toast.error('Avval tillarni sozlang');
-      return;
-    }
-    setCreating(true);
-    const slug = newSlug.trim().toLowerCase().replace(/\s+/g, '-');
-    const { data: page, error } = await supabase
-      .from('pages')
-      .insert({ slug, page_type: 'static' })
-      .select()
-      .single();
-    if (error || !page) {
-      toast.error('Yaratishda xatolik: ' + error?.message);
-      setCreating(false);
-      return;
-    }
-    // Create translations for all active languages
-    const translations = activeLanguages.map((l) => ({
-      page_id: page.id,
-      language_code: l.code,
-      title: newTitle.trim(),
-    }));
-    if (translations.length > 0) {
-      await supabase.from('page_translations').insert(translations);
-    }
-    toast.success('Sahifa yaratildi');
-    setNewSlug('');
-    setNewTitle('');
-    setCreateOpen(false);
-    setCreating(false);
-    load();
   };
 
-  const toggleActive = async (id: string, value: boolean) => {
-    const { error } = await supabase.from('pages').update({ is_active: value }).eq('id', id);
-    if (error) toast.error(error.message);
-    else { toast.success(value ? 'Faollashtirildi' : 'O\'chirildi'); load(); }
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setBusy(true);
+    try {
+      const { error } = await supabase.from('cms_pages' as any).delete().eq('id', deleteTarget.id);
+      if (error) throw error;
+      toast({ title: 'Muvaffaqiyat', description: "Sahifa o'chirildi" });
+      setDeleteTarget(null);
+      fetchPages();
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Xatolik', description: err.message });
+    } finally {
+      setBusy(false);
+    }
   };
 
-  const handleDelete = async (id: string) => {
-    const { error } = await supabase.from('pages').delete().eq('id', id);
-    if (error) toast.error(error.message);
-    else { toast.success('Sahifa o\'chirildi'); load(); }
-  };
+  const filtered = pages.filter((p) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return p.title.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q);
+  });
 
-  const getTitle = (p: PageRow) => {
-    const def = p.page_translations?.find((t) => t.language_code === defaultLanguage?.code);
-    return def?.title || p.page_translations?.[0]?.title || p.slug;
-  };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Sahifalar CMS</h1>
-          <p className="text-muted-foreground">Statik sahifalar va ularning bloklarini boshqaring</p>
+          <h1 className="text-2xl font-bold flex items-center gap-2"><Files className="h-6 w-6" />Sahifalar</h1>
+          <p className="text-muted-foreground">Page builder bilan statik sahifalarni boshqaring</p>
         </div>
-        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-          <DialogTrigger asChild>
-            <Button><Plus className="w-4 h-4 mr-2" /> Yangi sahifa</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Yangi sahifa yaratish</DialogTitle>
-              <DialogDescription>Slug va boshlang'ich sarlavhani kiriting. Tarjimalar keyin tahrirlanadi.</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label>Slug (URL)</Label>
-                <Input value={newSlug} onChange={(e) => setNewSlug(e.target.value)} placeholder="masalan: kompaniya-haqida" />
-              </div>
-              <div>
-                <Label>Sarlavha (boshlang'ich)</Label>
-                <Input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Sahifa nomi" />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setCreateOpen(false)}>Bekor</Button>
-              <Button onClick={handleCreate} disabled={creating}>Yaratish</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <Button onClick={() => navigate('/admin/cms/pages/new')}><Plus className="mr-2 h-4 w-4" />Yangi sahifa</Button>
       </div>
 
-      {loading ? (
-        <div className="grid gap-4">
-          {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-24 w-full" />)}
-        </div>
-      ) : pages.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            <FileText className="w-12 h-12 mx-auto mb-4 opacity-40" />
-            <p>Hali sahifa yo'q. Birinchisini yarating.</p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-3">
-          {pages.map((p) => (
-            <Card key={p.id}>
-              <CardContent className="flex items-center gap-4 py-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-semibold truncate">{getTitle(p)}</h3>
-                    {p.is_system && <Badge variant="secondary">tizim</Badge>}
-                    <Badge variant={p.is_active ? 'default' : 'outline'}>
-                      {p.is_active ? 'Faol' : 'Nofaol'}
+      <div className="relative max-w-md">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input placeholder="Sahifa nomi yoki slug..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
+      </div>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center justify-between">
+            <span>Barcha sahifalar ({filtered.length})</span>
+            <Badge variant="outline" className="font-normal">{pages.filter((p) => p.status === 'published').length} e'lon qilingan</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Sarlavha</TableHead>
+                <TableHead>Slug</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Yangilangan</TableHead>
+                <TableHead className="text-right">Amallar</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((p) => (
+                <TableRow key={p.id}>
+                  <TableCell className="font-medium">{p.title}</TableCell>
+                  <TableCell><code className="text-xs bg-muted px-2 py-1 rounded">/page/{p.slug}</code></TableCell>
+                  <TableCell>
+                    <Badge variant={p.status === 'published' ? 'default' : 'secondary'}>
+                      {p.status === 'published' ? "E'lon qilingan" : 'Qoralama'}
                     </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">/{p.slug}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Switch checked={p.is_active} onCheckedChange={(v) => toggleActive(p.id, v)} />
-                  <Button asChild variant="outline" size="sm">
-                    <Link to={`/admin/cms/pages/${p.id}`}>
-                      <Pencil className="w-4 h-4 mr-1" /> Tahrirlash
-                    </Link>
-                  </Button>
-                  {!p.is_system && (
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon"><Trash2 className="w-4 h-4 text-destructive" /></Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Sahifani o'chirishni tasdiqlang</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            "{getTitle(p)}" sahifasi va uning barcha bloklari o'chiriladi. Bu amalni qaytarib bo'lmaydi.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Bekor</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDelete(p.id)}>O'chirish</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {new Date(p.updated_at).toLocaleDateString('uz-UZ', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <a href={`/page/${p.slug}?preview=1`} target="_blank" rel="noopener noreferrer" title="Ko'rib chiqish" className="text-muted-foreground hover:text-primary">
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                      <Button variant="ghost" size="icon" disabled={busy} title={p.status === 'published' ? "Qoralama qilish" : "E'lon qilish"} onClick={() => togglePublish(p)}>
+                        {p.status === 'published' ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                      <Button variant="ghost" size="icon" asChild>
+                        <Link to={`/admin/cms/pages/${p.id}`}><Pencil className="h-4 w-4" /></Link>
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => setDeleteTarget(p)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {filtered.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-12">
+                    <div className="flex flex-col items-center gap-2">
+                      <Files className="h-8 w-8 text-muted-foreground" />
+                      <p className="text-muted-foreground">Sahifalar topilmadi</p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Sahifani o'chirish?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Haqiqatan ham "{deleteTarget?.title}" sahifasini o'chirmoqchimisiz? Barcha bloklar va tarjimalar ham o'chiriladi.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={busy}>Bekor qilish</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} disabled={busy} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              O'chirish
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
