@@ -57,6 +57,7 @@ import SystemSettings from "./pages/admin/SystemSettings";
 import Themes from "./pages/admin/Themes";
 import CheckoutFormSettings from "./pages/admin/CheckoutFormSettings";
 import AdminAnalytics from "./pages/admin/Analytics";
+import ComingSoon from "./pages/admin/ComingSoon";
 
 const queryClient = new QueryClient();
 
@@ -161,6 +162,47 @@ const App = () => (
                           <Route path="analytics" element={
                             <ProtectedRoute module="analytics">
                               <AdminAnalytics />
+                            </ProtectedRoute>
+                          } />
+
+                          {/* CMS (Phase 2+) */}
+                          <Route path="cms/homepage" element={
+                            <ProtectedRoute module="cms_homepage">
+                              <ComingSoon title="Homepage CMS" description="Bosh sahifa sektsiyalarini boshqarish — Bosqich 3 da qo'shiladi." />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="cms/pages" element={
+                            <ProtectedRoute module="cms_pages">
+                              <ComingSoon title="Sahifalar CMS" description="Page builder bilan statik sahifalarni boshqarish — Bosqich 2 da qo'shiladi." />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="cms/blog" element={
+                            <ProtectedRoute module="cms_blog">
+                              <ComingSoon title="Blog" description="Maqolalar va yangiliklar — Bosqich 4 da qo'shiladi." />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="cms/faq" element={
+                            <ProtectedRoute module="cms_faq">
+                              <ComingSoon title="FAQ" description="Tez-tez so'raladigan savollar — Bosqich 4 da qo'shiladi." />
+                            </ProtectedRoute>
+                          } />
+
+                          {/* Marketing */}
+                          <Route path="marketing/seo" element={
+                            <ProtectedRoute module="marketing_seo">
+                              <ComingSoon title="SEO" description="Markaziy SEO sozlamalari — Bosqich 5 da qo'shiladi." />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="marketing/banners" element={
+                            <ProtectedRoute module="marketing_banners">
+                              <ComingSoon title="Bannerlar" description="Hero sliderlar va promo bloklar — Bosqich 3 da qo'shiladi." />
+                            </ProtectedRoute>
+                          } />
+
+                          {/* Settings → Languages (alias to system settings page where LanguageManager lives) */}
+                          <Route path="settings/languages" element={
+                            <ProtectedRoute module="settings_languages">
+                              <SystemSettings />
                             </ProtectedRoute>
                           } />
                         </Route>
