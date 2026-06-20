@@ -49,57 +49,27 @@ export function Header() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 transition-all duration-500 border-b',
-        scrolled
-          ? 'bg-background/90 backdrop-blur-xl border-border/60 shadow-[0_8px_30px_-12px_hsl(var(--foreground)/0.12)]'
-          : 'bg-background border-transparent',
+        'fixed left-0 right-0 z-50 transition-all duration-500',
+        scrolled ? 'top-2 px-2 sm:px-4' : 'top-4 px-3 sm:px-6',
       )}
     >
-      {/* Top utility strip */}
       <div
         className={cn(
-          'hidden md:block border-b border-border/40 bg-secondary/40 text-muted-foreground transition-all duration-500 overflow-hidden',
-          scrolled ? 'max-h-0 opacity-0 border-transparent' : 'max-h-10 opacity-100',
+          'mx-auto max-w-[1400px] rounded-2xl border transition-all duration-500',
+          scrolled
+            ? 'bg-background/85 backdrop-blur-xl border-border/60 shadow-[0_10px_40px_-12px_hsl(var(--foreground)/0.18)]'
+            : 'bg-background/40 backdrop-blur-md border-white/20 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.25)]',
         )}
       >
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between h-9 text-[11px] tracking-[0.18em] uppercase">
-            <div className="flex items-center gap-6">
-              <span className="flex items-center gap-1.5">
-                <MapPin className="w-3 h-3 text-primary" />
-                {address}
-              </span>
-              <span className="hidden lg:flex items-center gap-1.5">
-                <Clock className="w-3 h-3 text-primary" />
-                {hours}
-              </span>
-            </div>
-            <div className="flex items-center gap-5">
-              <span className="hidden lg:inline">
-                {language === 'ru'
-                  ? 'Бесплатная доставка по Ташкенту от 300 000 сум'
-                  : 'Toshkent bo‘ylab 300 000 so‘mdan yuqori — yetkazib berish bepul'}
-              </span>
-              <a
-                href={`tel:${contactPhone.replace(/\s/g, '')}`}
-                className="flex items-center gap-1.5 hover:text-primary transition-colors"
-              >
-                <Phone className="w-3 h-3" />
-                {contactPhone}
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Main bar */}
-      <div className="container mx-auto px-4 lg:px-8">
+      <div className="px-4 lg:px-8">
         <div
           className={cn(
             'flex items-center justify-between transition-all duration-500',
-            scrolled ? 'h-16' : 'h-20',
+            scrolled ? 'h-14' : 'h-16',
           )}
         >
+
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group shrink-0">
             <span className="font-serif text-xl md:text-2xl lg:text-[26px] font-bold tracking-[0.04em] text-foreground leading-none">
@@ -281,6 +251,8 @@ export function Header() {
           </Button>
         </nav>
       </div>
+      </div>
+
 
       {createPortal(
         <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />,
