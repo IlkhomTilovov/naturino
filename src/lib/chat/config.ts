@@ -1,44 +1,44 @@
 // Chat widget configuration
-// Backend developer: replace API_BASE_URL with real chatbot endpoint
+// PETFOOD MARKET — AI pet-food konsultant (it va mushuk ozuqalari)
 
 export const CHAT_CONFIG = {
   API_BASE_URL: `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat-ai`,
   TIMEOUT_MS: 20000,
   MAX_MESSAGE_LENGTH: 1000,
-  STORAGE_KEY: "tk-chat-history-v1",
-  CONVERSATION_ID_KEY: "tk-chat-conversation-id",
+  STORAGE_KEY: "pm-chat-history-v1",
+  CONVERSATION_ID_KEY: "pm-chat-conversation-id",
   BRAND_COLOR: "#6B3E26",
 };
 
 export const WELCOME_MESSAGES: Record<"uz" | "ru", string> = {
-  uz: "Assalomu alaykum! Sizga zamoklar, eshiklar, santexnika va qurilish lesalari bo'yicha yordam beraman.",
-  ru: "Здравствуйте! Я помогу вам с умными замками, дверями, сантехникой и строительными лесами.",
+  uz: "Assalomu alaykum! Men PETFOOD MARKET AI konsultantiman. It va mushuklar uchun ozuqa tanlashda yordam beraman. 🐶🐱",
+  ru: "Здравствуйте! Я AI-консультант PETFOOD MARKET. Помогу подобрать корм для вашей собаки или кошки. 🐶🐱",
 };
 
 export const SUGGESTED_QUESTIONS: Record<"uz" | "ru", string[]> = {
   uz: [
-    "Smart zamoklar haqida",
-    "Eshiklar katalogi",
-    "Santexnika mahsulotlari",
-    "Lesa narxlari",
-    "Yetkazib berish",
-    "Kontaktlar",
+    "Itim uchun ozuqa tanlang",
+    "Mushugim uchun ozuqa tanlang",
+    "Quruq va nam ozuqa farqi",
+    "Sterilized mushuklar uchun",
+    "Royal Canin haqida",
+    "Yetkazib berish shartlari",
   ],
   ru: [
-    "Об умных замках",
-    "Каталог дверей",
-    "Сантехника",
-    "Цены на леса",
-    "Доставка",
-    "Контакты",
+    "Подобрать корм для собаки",
+    "Подобрать корм для кошки",
+    "Сухой или влажный корм",
+    "Корм для стерилизованных",
+    "О Royal Canin",
+    "Условия доставки",
   ],
 };
 
 export const UI_TEXT: Record<"uz" | "ru", Record<string, string>> = {
   uz: {
-    title: "TILLA KAMILOV AI Assistant",
+    title: "PETFOOD MARKET AI",
     online: "Onlayn",
-    placeholder: "Savolingizni yozing...",
+    placeholder: "It yoki mushuk ozuqasi haqida so'rang...",
     send: "Yuborish",
     clear: "Suhbatni tozalash",
     error: "Xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
@@ -49,9 +49,9 @@ export const UI_TEXT: Record<"uz" | "ru", Record<string, string>> = {
     open: "Chatni ochish",
   },
   ru: {
-    title: "TILLA KAMILOV AI Assistant",
+    title: "PETFOOD MARKET AI",
     online: "Онлайн",
-    placeholder: "Напишите ваш вопрос...",
+    placeholder: "Спросите о корме для собак или кошек...",
     send: "Отправить",
     clear: "Очистить чат",
     error: "Произошла ошибка. Пожалуйста, попробуйте снова.",
