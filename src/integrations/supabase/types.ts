@@ -568,6 +568,45 @@ export type Database = {
         }
         Relationships: []
       }
+      languages: {
+        Row: {
+          code: string
+          created_at: string
+          flag: string | null
+          id: string
+          is_active: boolean
+          is_default: boolean
+          name: string
+          native_name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          flag?: string | null
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name: string
+          native_name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          flag?: string | null
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name?: string
+          native_name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
