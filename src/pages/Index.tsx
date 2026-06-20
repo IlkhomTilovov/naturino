@@ -130,7 +130,7 @@ export default function Index() {
   useSEO({});
   const { settings } = useSystemSettings();
   const contactPhone = settings?.contact_phone || '+998 90 123 45 67';
-  const contactEmail = settings?.contact_email || 'export@naturino.uz';
+  const contactEmail = (settings as any)?.contact_email || 'export@naturino.uz';
 
   const s = {
     why: useInView(), cats: useInView(), pl: useInView(), mfg: useInView(),
